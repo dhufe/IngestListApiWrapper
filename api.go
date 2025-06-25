@@ -4,12 +4,17 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+type fileUploadResponse struct {
+	DurationInMs int64  `json:"durationInMs"`
+	FilePath     string `json:"filePath"`
+}
 
 func getDefaultResponse(c *gin.Context) {
 	c.String(http.StatusOK, fmt.Sprintf(DEFAULT_RESPONSE, VERSION))
@@ -38,6 +43,8 @@ func identifyFile(c *gin.Context) {
 }
 
 func uploadFile(c *gin.Context) {
+	s := time.Now()
+
 	file, err := c.FormFile("file")
 	// no file received
 	if err != nil {
@@ -56,5 +63,12 @@ func uploadFile(c *gin.Context) {
 		})
 		return
 	}
+
+	response := fileUploadResponse{
+		DurationInMs: time.Since(s).Milliseconds(),
+		FilePath:     fileStorePath,
+	}
+
+	c.JSON(http.StatusOK, response)
 	//	defer os.Remove(fileStorePath)
 }
