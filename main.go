@@ -6,9 +6,10 @@ import (
 )
 
 const (
-	FILE_STORE_PATH  = "/data"
-	VERSION          = "0.1"
-	DEFAULT_RESPONSE = "IngestList-Wrapper version %s is running"
+	FILE_STORE_PATH   = "/data"
+	VERSION           = "0.1"
+	DEFAULT_RESPONSE  = "IngestList-Wrapper version %s is running"
+	DEFAULT_IL_SERVER = "localhost:21757"
 )
 
 type fileIndentify struct {
