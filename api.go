@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -21,6 +22,15 @@ func getDefaultResponse(c *gin.Context) {
 }
 
 func identifyFile(c *gin.Context) {
+	filePath := c.Param("filePath")
+
+	if _, err := os.Stat(filePath); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "file does not exist",
+		})
+		return
+	}
+
 	con, err := net.Dial("tcp", DEFAULT_IL_SERVER)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -31,15 +41,13 @@ func identifyFile(c *gin.Context) {
 	defer con.Close()
 
 	// Send data to socket
-	_, err = con.Write([]byte("Test"))
+	_, err = con.Write([]byte(filePath))
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "unable to write to socket",
 		})
 		return
-
 	}
-	defer con.Close()
 }
 
 func uploadFile(c *gin.Context) {
