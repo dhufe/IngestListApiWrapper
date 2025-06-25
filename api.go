@@ -56,5 +56,5 @@ func uploadFile(c *gin.Context) {
 		})
 		return
 	}
-	defer os.Remove(fileStorePath)
+	//	defer os.Remove(fileStorePath)
 }
