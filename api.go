@@ -1,8 +1,8 @@
 package main
 
 import (
-	//	"net"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -16,6 +16,25 @@ func getDefaultResponse(c *gin.Context) {
 }
 
 func identifyFile(c *gin.Context) {
+	con, err := net.Dial("tcp", DEFAULT_IL_SERVER)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "unable to open connection to socket",
+		})
+		return
+	}
+	defer con.Close()
+
+	// Send data to socket
+	_, err = con.Write([]byte("Test"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "unable to write to socket",
+		})
+		return
+
+	}
+	defer con.Close()
 }
 
 func uploadFile(c *gin.Context) {
