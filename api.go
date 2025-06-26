@@ -69,19 +69,8 @@ func identifyFile(c *gin.Context) {
 		return
 	}
 
-	scanner := bufio.NewScanner(&timeoutReader{Conn: con})
-	msg := "blaa"
-
-	for scanner.Scan() {
-		msg += scanner.Text()
-	}
-	if err := scanner.Err(); err != nil {
-		fmt.Printf("%v", err)
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": "Error getting IngestList ouput from socket.",
-		})
-		return
-	}
+	var msg string = ""
+	con.Read(msg)
 
 	response := fileIdentifyResponse{
 		DurationInMs: time.Since(s).Milliseconds(),
