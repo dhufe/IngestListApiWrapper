@@ -31,7 +31,7 @@ func main() {
 	router.GET("api", getDefaultResponse)
 
 	router.POST("/api/upload", uploadFile)
-	router.GET("/api/identify", identifyFile)
+	router.POST("/api/identify", identifyFile)
 
 	router.Run(":8080")
 }
