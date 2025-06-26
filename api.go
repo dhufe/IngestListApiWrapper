@@ -74,20 +74,22 @@ func identifyFile(c *gin.Context) {
 	msg := make([]byte, 8192)
 	n, err = io.ReadFull(con, msg)
 	fmt.Printf("Read %d bytes from socket.\n", n)
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": "error reading data from socket",
-		})
-		return
-	}
-
+	/*
+	   TODO: Fix this peroperly
+	   	if err != nil {
+	   		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+	   			"message": "error reading data from socket",
+	   		})
+	   		return
+	   	}
+	*/
 	response := fileIdentifyResponse{
 		DurationInMs: time.Since(s).Milliseconds(),
 		Result:       string(msg),
 	}
 
 	c.JSON(http.StatusOK, response)
+	defer os.Remove(filePath.FilePath)
 }
 
 func uploadFile(c *gin.Context) {
@@ -118,5 +120,4 @@ func uploadFile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
-	//	defer os.Remove(fileStorePath)
 }
