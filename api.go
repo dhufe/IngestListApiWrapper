@@ -22,7 +22,13 @@ func getDefaultResponse(c *gin.Context) {
 }
 
 func identifyFile(c *gin.Context) {
-	filePath := c.Param("filePath")
+	var filePath string
+
+	if err := c.BindJSON(&filePath); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "path is missing",
+		})
+	}
 
 	fmt.Printf("Processing : %s", filePath)
 
