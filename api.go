@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"net"
 	"net/http"
@@ -42,7 +41,7 @@ func identifyFile(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("Processing : %s", filePath.FilePath)
+	fmt.Printf("Processing : %s\n", filePath.FilePath)
 
 	if _, err := os.Stat(filePath.FilePath); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -70,7 +69,8 @@ func identifyFile(c *gin.Context) {
 	}
 
 	msg := make([]byte, 4096)
-	_, err = con.Read(msg)
+	n, err := con.Read(msg[:cap(msg)])
+	msg = msg[:n]
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "error reading data from socket",
