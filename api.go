@@ -69,12 +69,18 @@ func identifyFile(c *gin.Context) {
 		return
 	}
 
-	var msg string = ""
-	con.Read(msg)
+	msg := make([]byte, 4096)
+	_, err = con.Read(msg)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "error reading data from socket",
+		})
+		return
+	}
 
 	response := fileIdentifyResponse{
 		DurationInMs: time.Since(s).Milliseconds(),
-		Result:       msg,
+		Result:       string(msg),
 	}
 
 	c.JSON(http.StatusOK, response)
