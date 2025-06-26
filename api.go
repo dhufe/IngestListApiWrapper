@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net"
 	"net/http"
@@ -17,6 +18,11 @@ type fileUploadResponse struct {
 	FilePath     string `json:"filePath"`
 }
 
+type fileIdentifyResponse struct {
+	DurationInMs int64  `json:"durationInMs"`
+	Result       string `json:"result"`
+}
+
 type fileIdentifyRequest struct {
 	FilePath string `json:"filePath" binding:"required"`
 }
@@ -27,6 +33,7 @@ func getDefaultResponse(c *gin.Context) {
 
 func identifyFile(c *gin.Context) {
 	var filePath fileIdentifyRequest
+	s := time.Now()
 
 	if err := c.ShouldBind(&filePath); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -37,7 +44,7 @@ func identifyFile(c *gin.Context) {
 
 	fmt.Printf("Processing : %s", filePath.FilePath)
 
-	if _, err := os.Stat(filePath.FilePath); err == nil {
+	if _, err := os.Stat(filePath.FilePath); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "file does not exist",
 		})
@@ -61,6 +68,27 @@ func identifyFile(c *gin.Context) {
 		})
 		return
 	}
+
+	scanner := bufio.NewScanner(&timeoutReader{Conn: con})
+	msg := ""
+
+	for scanner.Scan() {
+		msg += scanner.Text()
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Printf("%v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "Error getting IngestList ouput from socket.",
+		})
+		return
+	}
+
+	response := fileUploadResponse{
+		DurationInMs: time.Since(s).Milliseconds(),
+		FilePath:     fileStorePath,
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 func uploadFile(c *gin.Context) {
@@ -85,9 +113,9 @@ func uploadFile(c *gin.Context) {
 		return
 	}
 
-	response := fileUploadResponse{
+	response := fileIdentifyResponse{
 		DurationInMs: time.Since(s).Milliseconds(),
-		FilePath:     fileStorePath,
+		Result:       fileStorePath,
 	}
 
 	c.JSON(http.StatusOK, response)
