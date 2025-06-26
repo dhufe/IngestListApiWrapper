@@ -24,7 +24,7 @@ func getDefaultResponse(c *gin.Context) {
 func identifyFile(c *gin.Context) {
 	filePath := c.Param("filePath")
 
-	if _, err := os.Stat(filePath); err != nil {
+	if _, err := os.Stat(filePath); err == nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "file does not exist",
 		})
