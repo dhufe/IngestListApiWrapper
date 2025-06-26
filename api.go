@@ -18,7 +18,7 @@ type fileUploadResponse struct {
 }
 
 type fileIdentifyRequest struct {
-	FilePath string `json:"filePath"`
+	FilePath string `json:"filePath" binding:"required"`
 }
 
 func getDefaultResponse(c *gin.Context) {
@@ -28,10 +28,11 @@ func getDefaultResponse(c *gin.Context) {
 func identifyFile(c *gin.Context) {
 	var filePath fileIdentifyRequest
 
-	if err := c.BindJSON(&filePath); err != nil {
+	if err := c.ShouldBind(&filePath); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "path is missing",
 		})
+		return
 	}
 
 	fmt.Printf("Processing : %s", filePath.FilePath)
