@@ -70,7 +70,7 @@ func identifyFile(c *gin.Context) {
 	}
 
 	scanner := bufio.NewScanner(&timeoutReader{Conn: con})
-	msg := ""
+	msg := "blaa"
 
 	for scanner.Scan() {
 		msg += scanner.Text()
@@ -83,9 +83,9 @@ func identifyFile(c *gin.Context) {
 		return
 	}
 
-	response := fileUploadResponse{
+	response := fileIdentifyResponse{
 		DurationInMs: time.Since(s).Milliseconds(),
-		FilePath:     fileStorePath,
+		Result:       msg,
 	}
 
 	c.JSON(http.StatusOK, response)
@@ -113,9 +113,9 @@ func uploadFile(c *gin.Context) {
 		return
 	}
 
-	response := fileIdentifyResponse{
+	response := fileUploadResponse{
 		DurationInMs: time.Since(s).Milliseconds(),
-		Result:       fileStorePath,
+		FilePath:     fileStorePath,
 	}
 
 	c.JSON(http.StatusOK, response)
