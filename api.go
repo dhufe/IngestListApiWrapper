@@ -85,7 +85,7 @@ func identifyFile(c *gin.Context) {
 	*/
 	response := fileIdentifyResponse{
 		DurationInMs: time.Since(s).Milliseconds(),
-		Result:       string(msg),
+		Result:       string(msg[:n]),
 	}
 
 	c.JSON(http.StatusOK, response)
