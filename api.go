@@ -74,6 +74,10 @@ func identifyFile(c *gin.Context) {
 	msg := make([]byte, 8192)
 	n, err = io.ReadFull(con, msg)
 	fmt.Printf("Read %d bytes from socket.\n", n)
+
+	if err != nil {
+		fmt.Printf("Error %v", err)
+	}
 	/*
 	   TODO: Fix this peroperly
 	   	if err != nil {
