@@ -27,11 +27,11 @@ type fileIdentifyRequest struct {
 	FilePath string `json:"filePath" binding:"required"`
 }
 
-func getDefaultResponse(c *gin.Context) {
+func (config Config) getDefaultResponse(c *gin.Context) {
 	c.String(http.StatusOK, fmt.Sprintf(DEFAULT_RESPONSE, VERSION))
 }
 
-func identifyFile(c *gin.Context) {
+func (config Config) identifyFile(c *gin.Context) {
 	var filePath fileIdentifyRequest
 	s := time.Now()
 
@@ -51,7 +51,7 @@ func identifyFile(c *gin.Context) {
 		return
 	}
 
-	con, err := net.Dial("tcp", DEFAULT_IL_SERVER)
+	con, err := net.Dial("tcp", config.IngestListServer)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "unable to open connection to socket",
@@ -91,7 +91,7 @@ func identifyFile(c *gin.Context) {
 	defer os.Remove(filePath.FilePath)
 }
 
-func uploadFile(c *gin.Context) {
+func (config Config) uploadFile(c *gin.Context) {
 	s := time.Now()
 
 	file, err := c.FormFile("file")
@@ -104,7 +104,7 @@ func uploadFile(c *gin.Context) {
 	}
 	// generate unique file name for storing
 	filename := uuid.New().String() + "_" + file.Filename
-	fileStorePath := filepath.Join(FILE_STORE_PATH, filename)
+	fileStorePath := filepath.Join(config.FileStorePath, filename)
 	err = c.SaveUploadedFile(file, fileStorePath)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{

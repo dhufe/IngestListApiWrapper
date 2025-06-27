@@ -1,15 +1,15 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 const (
-	FILE_STORE_PATH   = "/data"
-	VERSION           = "0.2"
-	DEFAULT_RESPONSE  = "IngestList-Wrapper version %s is running"
-	DEFAULT_IL_SERVER = "ingestlist-service.dimag.svc.cluster.local:21757"
+	VERSION          = "0.2"
+	DEFAULT_RESPONSE = "IngestList-Wrapper version %s is running"
 )
 
 type fileIndentify struct {
@@ -28,11 +28,18 @@ func main() {
 	corsConfig.AllowMethods = []string{"GET", "POST"}
 	// It's important that the cors configuration is used before declaring the routes.
 	router.Use(cors.New(corsConfig))
-	router.GET("api", getDefaultResponse)
 
-	router.POST("/api/upload", uploadFile)
-	router.POST("/api/identify", identifyFile)
+	cfgPath, err := ParseFlags()
+	if err != nil {
+		fmt.Printf("%v\n", err)
+	}
+	cfg, err := NewConfig(cfgPath)
+	if err != nil {
+		fmt.Printf("%v\n", err)
+	}
 
+	router.GET("api", cfg.getDefaultResponse)
+	router.POST("/api/upload", cfg.uploadFile)
+	router.POST("/api/identify", cfg.identifyFile)
 	router.Run(":8080")
 }
-
