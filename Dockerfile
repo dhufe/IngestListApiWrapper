@@ -11,4 +11,5 @@ RUN apk update --no-cache -U \
   && apk add --no-cache curl
 WORKDIR /app 
 COPY --from=build /app/apiwrapper ./apiwrapper
+COPY config.yml .
 CMD ["./apiwrapper"]
