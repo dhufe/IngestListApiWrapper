@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -17,14 +18,33 @@ type fileUploadResponse struct {
 	FilePath     string `json:"filePath"`
 }
 
+type fileIdentifyResponse struct {
+	DurationInMs int64  `json:"durationInMs"`
+	Result       string `json:"result"`
+}
+
+type fileIdentifyRequest struct {
+	FilePath string `json:"filePath" binding:"required"`
+}
+
 func getDefaultResponse(c *gin.Context) {
 	c.String(http.StatusOK, fmt.Sprintf(DEFAULT_RESPONSE, VERSION))
 }
 
 func identifyFile(c *gin.Context) {
-	filePath := c.Param("filePath")
+	var filePath fileIdentifyRequest
+	s := time.Now()
 
-	if _, err := os.Stat(filePath); err != nil {
+	if err := c.ShouldBind(&filePath); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "path is missing",
+		})
+		return
+	}
+
+	fmt.Printf("Processing : %s\n", filePath.FilePath)
+
+	if _, err := os.Stat(filePath.FilePath); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "file does not exist",
 		})
@@ -41,13 +61,34 @@ func identifyFile(c *gin.Context) {
 	defer con.Close()
 
 	// Send data to socket
-	_, err = con.Write([]byte(filePath))
+	n, err := con.Write([]byte(filePath.FilePath + "\n"))
+	fmt.Printf("Written %d bytes to socket.\n", n)
+
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "unable to write to socket",
 		})
 		return
 	}
+
+	msg := make([]byte, 8192)
+	n, err = io.ReadFull(con, msg)
+	fmt.Printf("Read %d bytes from socket.\n", n)
+
+	if err != nil && err != io.ErrUnexpectedEOF {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "error reading data from socket",
+		})
+		return
+	}
+
+	response := fileIdentifyResponse{
+		DurationInMs: time.Since(s).Milliseconds(),
+		Result:       string(msg[:n]),
+	}
+
+	c.JSON(http.StatusOK, response)
+	defer os.Remove(filePath.FilePath)
 }
 
 func uploadFile(c *gin.Context) {
@@ -78,5 +119,4 @@ func uploadFile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
-	//	defer os.Remove(fileStorePath)
 }
