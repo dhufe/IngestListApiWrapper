@@ -7,7 +7,7 @@ import (
 
 const (
 	FILE_STORE_PATH   = "/data"
-	VERSION           = "0.1"
+	VERSION           = "0.2"
 	DEFAULT_RESPONSE  = "IngestList-Wrapper version %s is running"
 	DEFAULT_IL_SERVER = "ingestlist-service.dimag.svc.cluster.local:21757"
 )
