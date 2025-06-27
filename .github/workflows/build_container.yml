@@ -43,9 +43,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            types=ref,event=branch
-            types=ref,event=tag
-            types=raw,value=latest
+            type=ref,event=branch
+            type=ref,event=tag
+            type=raw,value=latest
             type=sha 
 
       - name: Build and push container image
