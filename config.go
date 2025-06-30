@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"os"
 
+	"dhufe/ingestlistapiwrapper/storage"
 	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
 	FileStorePath    string `yaml:"fileStoragePath"`
 	IngestListServer string `yaml:"ingestListServer"`
+
+	DbConfig storage.DBConfig `yaml:"dbConfig"`
 }
 
 func NewConfig(configPath string) (*Config, error) {
