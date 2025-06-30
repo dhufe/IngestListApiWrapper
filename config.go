@@ -13,7 +13,7 @@ type Config struct {
 	FileStorePath    string `yaml:"fileStoragePath"`
 	IngestListServer string `yaml:"ingestListServer"`
 
-	DbConfig storage.DBConfig `yaml:"dbConfig"`
+	DbConfig storage.DBConfig `yaml:"databaseConfig"`
 }
 
 func NewConfig(configPath string) (*Config, error) {

@@ -8,16 +8,16 @@ import (
 )
 
 type DBConfig struct {
-	Host     string
-	Port     string
-	Password string
-	User     string
-	DBName   string
-	SSLMode  string
+	Host     string `yaml:"host"`
+	Port     string `yaml:"port"`
+	Password string `yaml:"password"`
+	User     string `yaml:"user"`
+	DBName   string `yaml:"dbname"`
+	SSLMode  string `yaml:"sslmode"`
 }
 
 func NewDatabase(config *DBConfig) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s port=%s password=%s dbname=%s sslmode=%s",
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		config.Host, config.Port, config.User, config.Password, config.DBName, config.SSLMode,
 	)
 

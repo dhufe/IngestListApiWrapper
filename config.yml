@@ -1,2 +1,9 @@
 fileStoragePath: "data"
 ingestListServer: "localhost:21757"
+dataBaseConfig:
+  host:
+  port:
+  user:
+  password:
+  dbname:
+  sslmode:
