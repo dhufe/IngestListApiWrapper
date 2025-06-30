@@ -5,6 +5,9 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	"dhufe/ingestlistapiwrapper/models"
+	"dhufe/ingestlistapiwrapper/storage"
 )
 
 const (
@@ -37,6 +40,14 @@ func main() {
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
+
+	db, err := storage.NewDatabase(&cfg.DbConfig)
+	if err != nil {
+		fmt.Println("could not load the database")
+	}
+
+	db.AutoMigrate(&models.Job{})
+	// models.MigrateJobs(db)
 
 	router.GET("api", cfg.getDefaultResponse)
 	router.POST("/api/upload", cfg.uploadFile)
