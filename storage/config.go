@@ -9,10 +9,10 @@ import (
 )
 
 type Config struct {
-	FileStorePath    string `yaml:"fileStoragePath"`
-	IngestListServer string `yaml:"ingestListServer"`
-
-	DbConfig DBConfig `yaml:"databaseConfig"`
+	FileStorePath    string   `yaml:"fileStoragePath"`
+	IngestListServer string   `yaml:"ingestListServer"`
+	SchedulerTab     string   `yaml:"scheduler"`
+	DbConfig         DBConfig `yaml:"databaseConfig"`
 }
 
 func NewConfig(configPath string) (*Config, error) {

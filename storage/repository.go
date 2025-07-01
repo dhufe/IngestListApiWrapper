@@ -29,10 +29,12 @@ func (r *Repository) getDefaultResponse(c *gin.Context) {
 
 func (r *Repository) CreateRoutes(router *gin.Engine) {
 	router.GET("api", r.getDefaultResponse)
+	router.GET("/", r.getDefaultResponse)
 	router.POST("/api/upload", r.CreateJob)
 	router.GET("/api/jobs", r.GetJobs)
 	router.GET("/api/job/:id", r.GetJobByID)
 	router.DELETE("/api/job/:id", r.DeleteJob)
+
 }
 
 func (r *Repository) CreateJob(c *gin.Context) {
@@ -96,7 +98,7 @@ func (r *Repository) AddJob() {
 	)
 
 	job := gocron.CronJob(
-		"* * * * *",
+		r.Config.SchedulerTab,
 		false,
 	)
 	j, err := (*r.Scheduler).NewJob(job, task)
