@@ -100,7 +100,7 @@ func (r *Repository) DummyFunc() {
 func (r *Repository) ProcessEntry() {
 	jobModel := &models.Jobs{}
 
-	err := r.DataBase.Where("status not LIKE ?", "Finished").First(&jobModel).Error
+	err := r.DataBase.Where("status not LIKE ?", "Finished").Last(&jobModel).Error
 	if err == nil {
 		fmt.Printf("Processing %s .\n", *jobModel.FilePath)
 
@@ -150,9 +150,6 @@ func (r *Repository) ProcessEntry() {
 			fmt.Printf("Can not update entry")
 			return
 		}
-
-		//Update()db.Model(&user).Update("name", "hello")
-
 		//defer os.Remove(*jobModel.FilePath)
 	}
 }
