@@ -7,7 +7,10 @@ import (
 	"github.com/go-co-op/gocron/v2"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"io"
+	"net"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 )
@@ -65,10 +68,12 @@ func (r *Repository) CreateJob(c *gin.Context) {
 	}
 
 	var status = "New"
+	var result = " "
 	job := models.Job{
-		&fileStorePath,
-		&status,
-		s,
+		FilePath: &fileStorePath,
+		Status:   &status,
+		Created:  s,
+		Result:   &result,
 	}
 
 	err = r.DataBase.Create(&job).Error
@@ -92,9 +97,69 @@ func (r *Repository) DummyFunc() {
 	}
 }
 
+func (r *Repository) ProcessEntry() {
+	jobModel := &models.Jobs{}
+
+	err := r.DataBase.Where("status not LIKE ?", "Finished").First(&jobModel).Error
+	if err == nil {
+		fmt.Printf("Processing %s .\n", *jobModel.FilePath)
+
+		if _, err := os.Stat(*jobModel.FilePath); err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		con, err := net.Dial("tcp", r.Config.IngestListServer)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		defer con.Close()
+
+		// Send data to socket
+		n, err := con.Write([]byte(*jobModel.FilePath + "\n"))
+		fmt.Printf("Written %d bytes to socket.\n", n)
+
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		msg := make([]byte, 8192)
+		n, err = io.ReadFull(con, msg)
+		fmt.Printf("Read %d bytes from socket.\n", n)
+
+		if err != nil && err != io.ErrUnexpectedEOF {
+			fmt.Println(err.Error())
+			return
+		}
+
+		var result string
+		result = string(msg[:n])
+		var status = "Finished"
+
+		j := models.Job{
+			FilePath: jobModel.FilePath,
+			Status:   &status,
+			Created:  jobModel.Created,
+			Result:   &result,
+		}
+
+		err = r.DataBase.Model(&jobModel).Updates(j).Error
+		if err != nil {
+			fmt.Printf("Can not update entry")
+			return
+		}
+
+		//Update()db.Model(&user).Update("name", "hello")
+
+		//defer os.Remove(*jobModel.FilePath)
+	}
+}
+
 func (r *Repository) AddJob() {
 	task := gocron.NewTask(
-		r.DummyFunc,
+		r.ProcessEntry,
 	)
 
 	job := gocron.CronJob(
@@ -109,7 +174,7 @@ func (r *Repository) AddJob() {
 }
 
 func (r *Repository) DeleteJob(c *gin.Context) {
-	jobModel := models.Jobs{}
+	jobModel := &models.Jobs{}
 
 	id := c.Param("id")
 
@@ -120,9 +185,27 @@ func (r *Repository) DeleteJob(c *gin.Context) {
 		return
 	}
 
-	err := r.DataBase.Delete(jobModel, id)
+	err := r.DataBase.Where("id = ?", id).First(jobModel).Error
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "could not get the job",
+		})
+		return
+	}
 
-	if err.Error != nil {
+	err = os.Remove(*jobModel.FilePath)
+	if err != nil {
+		return
+	}
+	//if err != nil {
+	//	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+	//		"message": "could not delete file in filesystem.",
+	//	})
+	//	return
+	//}
+
+	err = r.DataBase.Delete(models.Jobs{}, id).Error
+	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "could not delete job",
 		})
