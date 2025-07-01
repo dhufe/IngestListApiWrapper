@@ -26,13 +26,10 @@ func NewDatabase(config *DBConfig) (*gorm.DB, error) {
 		config.Port,
 		config.SSLMode,
 	)
-
-	fmt.Printf("%s\n", dsn)
-
 	var db *gorm.DB
-	if db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{}); err != nil {
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
 		return db, err
 	}
-
 	return db, nil
 }

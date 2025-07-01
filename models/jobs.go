@@ -6,14 +6,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type Job struct {
+type Jobs struct {
 	Id       uint      `gorm:"primary key;autoIncrement" json:"id"`
 	FilePath *string   `                                 json:"filePath"`
 	Status   *string   `                                 json:"status"`
 	Created  time.Time `                                 json:"created"`
 }
 
+type Job struct {
+	FilePath *string   `                                 json:"filePath"`
+	Status   *string   `                                 json:"status"`
+	Created  time.Time `                                 json:"created"`
+}
+
 func MigrateJobs(db *gorm.DB) error {
-	err := db.AutoMigrate(&Job{})
+	err := db.AutoMigrate(&Jobs{})
 	return err
 }
