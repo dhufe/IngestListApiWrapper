@@ -43,9 +43,14 @@ func main() {
 	}
 
 	r := storage.Repository{
-		DataBase: db,
-		Config:   cfg,
+		DataBase:  db,
+		Config:    cfg,
+		Scheduler: NewScheduler(),
 	}
+
+	r.AddJob()
+
+	(*r.Scheduler).Start()
 
 	r.CreateRoutes(router)
 	router.Run(":8080")

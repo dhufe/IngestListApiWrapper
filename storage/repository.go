@@ -4,6 +4,7 @@ import (
 	"dhufe/ingestlistapiwrapper/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-co-op/gocron/v2"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"net/http"
@@ -17,8 +18,9 @@ const (
 )
 
 type Repository struct {
-	DataBase *gorm.DB
-	Config   *Config
+	DataBase  *gorm.DB
+	Config    *Config
+	Scheduler *gocron.Scheduler
 }
 
 func (r *Repository) getDefaultResponse(c *gin.Context) {
@@ -78,6 +80,32 @@ func (r *Repository) CreateJob(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+func (r *Repository) DummyFunc() {
+	jobModels := &[]models.Jobs{}
+
+	err := r.DataBase.Where("status not LIKE ?", "Finished").Find(&jobModels).Error
+	if err == nil {
+		fmt.Printf("%s Scheduler executed.\n", time.Now())
+		fmt.Printf("Currently there are %d waiting tasks.\n", len(*jobModels))
+	}
+}
+
+func (r *Repository) AddJob() {
+	task := gocron.NewTask(
+		r.DummyFunc,
+	)
+
+	job := gocron.CronJob(
+		"* * * * *",
+		false,
+	)
+	j, err := (*r.Scheduler).NewJob(job, task)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("Job id = %d.\n", j.ID())
+}
+
 func (r *Repository) DeleteJob(c *gin.Context) {
 	jobModel := models.Jobs{}
 
@@ -133,8 +161,6 @@ func (r *Repository) GetJobByID(c *gin.Context) {
 		})
 		return
 	}
-
-	fmt.Println("the ID is", id)
 	err := r.DataBase.Where("id = ?", id).First(jobModel).Error
 
 	if err != nil {
