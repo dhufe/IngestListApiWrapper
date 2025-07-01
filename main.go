@@ -38,7 +38,7 @@ func main() {
 	}
 
 	if db != nil {
-		fmt.Printf("database loaded successfully")
+		fmt.Printf("database loaded successfully\rn")
 		models.MigrateJobs(db)
 	}
 
