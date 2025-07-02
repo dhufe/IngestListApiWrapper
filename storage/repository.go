@@ -1,18 +1,21 @@
 package storage
 
 import (
-	"dhufe/ingestlistapiwrapper/models"
+	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/go-co-op/gocron/v2"
-	"github.com/google/uuid"
-	"gorm.io/gorm"
 	"io"
 	"net"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/go-co-op/gocron/v2"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+
+	"dhufe/ingestlistapiwrapper/models"
 )
 
 const (
@@ -37,7 +40,6 @@ func (r *Repository) CreateRoutes(router *gin.Engine) {
 	router.GET("/api/jobs", r.GetJobs)
 	router.GET("/api/job/:id", r.GetJobByID)
 	router.DELETE("/api/job/:id", r.DeleteJob)
-
 }
 
 func (r *Repository) CreateJob(c *gin.Context) {
@@ -67,8 +69,8 @@ func (r *Repository) CreateJob(c *gin.Context) {
 		FilePath:     fileStorePath,
 	}
 
-	var status = "New"
-	var result = " "
+	status := "New"
+	result := " "
 	job := models.Job{
 		FilePath: &fileStorePath,
 		Status:   &status,
@@ -81,7 +83,6 @@ func (r *Repository) CreateJob(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "could not create job",
 		})
-
 	}
 
 	c.JSON(http.StatusOK, response)
@@ -100,8 +101,10 @@ func (r *Repository) DummyFunc() {
 func (r *Repository) ProcessEntry() {
 	jobModel := &models.Jobs{}
 
-	err := r.DataBase.Where("status not LIKE ?", "Finished").Last(&jobModel).Error
-	if err == nil {
+	err := r.DataBase.Find(&jobModel, "status NOT LIKE ?", "Finished")
+	if err.RowsAffected != 0 {
+
+		//	if err == nil {
 		fmt.Printf("Processing %s .\n", *jobModel.FilePath)
 
 		if _, err := os.Stat(*jobModel.FilePath); err != nil {
@@ -136,7 +139,7 @@ func (r *Repository) ProcessEntry() {
 
 		var result string
 		result = string(msg[:n])
-		var status = "Finished"
+		status := "Finished"
 
 		j := models.Job{
 			FilePath: jobModel.FilePath,
@@ -150,7 +153,7 @@ func (r *Repository) ProcessEntry() {
 			fmt.Printf("Can not update entry")
 			return
 		}
-		//defer os.Remove(*jobModel.FilePath)
+		// defer os.Remove(*jobModel.FilePath)
 	}
 }
 
@@ -244,7 +247,6 @@ func (r *Repository) GetJobByID(c *gin.Context) {
 		return
 	}
 	err := r.DataBase.Where("id = ?", id).First(jobModel).Error
-
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "could not get the job",
