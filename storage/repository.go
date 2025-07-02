@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -64,25 +63,24 @@ func (r *Repository) CreateJob(c *gin.Context) {
 		return
 	}
 
-	response := fileUploadResponse{
-		DurationInMs: time.Since(s).Milliseconds(),
-		FilePath:     fileStorePath,
-	}
-
 	status := "New"
 	result := " "
-	job := models.Job{
+	job := models.Jobs{
 		FilePath: &fileStorePath,
 		Status:   &status,
 		Created:  s,
 		Result:   &result,
 	}
 
-	err = r.DataBase.Create(&job).Error
-	if err != nil {
+	res := r.DataBase.Create(&job)
+	if res.Error != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "could not create job",
 		})
+	}
+
+	response := fileUploadResponse{
+		Data: job,
 	}
 
 	c.JSON(http.StatusOK, response)
