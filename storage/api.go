@@ -3,8 +3,7 @@ package storage
 import "dhufe/ingestlistapiwrapper/models"
 
 type fileUploadResponse struct {
-	DurationInMs int64  `json:"durationInMs"`
-	FilePath     string `json:"filePath"`
+	Data models.Jobs `json:"data"`
 }
 
 type fileIndentify struct {
