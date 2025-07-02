@@ -64,12 +64,12 @@ func (r *Repository) CreateJob(c *gin.Context) {
 	}
 
 	status := "New"
-	result := " "
+
 	job := models.Jobs{
 		FilePath: &fileStorePath,
 		Status:   &status,
 		Created:  s,
-		Result:   &result,
+		Result:   nil,
 	}
 
 	res := r.DataBase.Create(&job)
@@ -99,11 +99,11 @@ func (r *Repository) DummyFunc() {
 func (r *Repository) ProcessEntry() {
 	jobModel := &models.Jobs{}
 
-	err := r.DataBase.Find(&jobModel, "status NOT LIKE ?", "Finished")
+	err := r.DataBase.Find(&jobModel, "status NOT LIKE ?", "Finished").Order("id DESC")
 	if err.RowsAffected != 0 {
 
 		//	if err == nil {
-		fmt.Printf("Processing %s .\n", *jobModel.FilePath)
+		fmt.Printf("Processing %s.\n", *jobModel.FilePath)
 
 		if _, err := os.Stat(*jobModel.FilePath); err != nil {
 			fmt.Println(err.Error())
