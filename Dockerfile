@@ -13,3 +13,5 @@ WORKDIR /app
 COPY --from=build /app/apiwrapper ./apiwrapper
 COPY config.yml .
 CMD ["./apiwrapper"]
+
+EXPOSE 80
