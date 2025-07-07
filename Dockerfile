@@ -8,7 +8,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o apiwrapper
 
 FROM alpine:3.21 AS prod
 RUN apk update --no-cache -U \
-  && apk add --no-cache curl
+  && apk add --no-cache curl tzdata
 WORKDIR /app 
 COPY --from=build /app/apiwrapper ./apiwrapper
 COPY config.yml .
