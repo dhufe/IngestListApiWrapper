@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dev-postgres-statefulset
+  namespace: dev
+  labels:
+    app: dev-postgres
+spec:
+  replicas: 1
+  serviceName: dev-postgres
+  selector:
+    matchLabels:
+      app: dev-postgres
+  template:
+    metadata:
+      labels:
+        app: dev-postgres
+    spec:
+      containers:
+        - name: postgres-database
+          image: postgres:17.5-alpine
+#          env:
+#            - name: TZ
+#              value: "Europe/Berlin"
+          envFrom:
+            - secretRef:
+                name: dev-postgres-secret
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: pgdata
+          persistentVolumeClaim:
+            claimName: dev-postgres-pvc
+

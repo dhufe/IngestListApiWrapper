@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: ilwrapper 
+  name: ilwrapper-deployment
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ilwrapper 
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ilwrapper
+    spec:
+      volumes:
+        - name: ildata
+          persistentVolumeClaim:
+            claimName: ingestlist-data-pvc
+        - name: ilconfig
+          configMap:
+            name: ilwrapper-config
+        - name: zoneinfo
+          hostPath:
+            path: /usr/share/zoneinfo
+      containers:
+      - image: ghcr.io/dhufe/ingestlistapiwrapper
+        imagePullPolicy: Always
+        name: il-deployment
+        volumeMounts:
+          - name: ildata
+            mountPath: /data
+          - name: ilconfig
+            mountPath: /app/config.yml
+            subPath: config.yml
+        env:
+          - name: GIN_MODE
+            value: "release"
+        ports:
+          - name: http
+            containerPort: 8080
+        resources: {}
+      restartPolicy: Always

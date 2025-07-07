@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-ingestlist-service
+  namespace: dev
+spec:
+  ports:
+    - port: 21757
+      protocol: TCP
+      targetPort: 21757
+  selector:
+    app: ingestlist
+
+
