@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: ilwrapper 
+  name: il-deployment
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ingestlist
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ingestlist 
+    spec:
+      volumes:
+        - name: ildata
+          persistentVolumeClaim:
+            claimName: ingestlist-data-pvc
+      containers:
+      - image: registry.hufschlaeger.net/daniel/container-dimag/alpine_dimag_ingestlist
+        imagePullPolicy: Always
+        name: il-deployment
+        volumeMounts:
+          - name: ildata
+            mountPath: /data 
+        ports:
+          - name: ingestlist
+            containerPort: 21757
+        resources: {}
+      restartPolicy: Always
