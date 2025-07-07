@@ -96,6 +96,16 @@ func (r *Repository) DummyFunc() {
 	}
 }
 
+func (r *Repository) CleaningDatabase() {
+	jobModels := &[]models.Jobs{}
+	result := r.DataBase.Where("t.created < CURRENT_DATE - INTERVAL '7 days' AND t.status LIKE ?", "Finished").
+		Find(&jobModels)
+	if result.Error == nil {
+		fmt.Printf("%s database cleanup executed.\n", time.Now())
+		fmt.Printf("This job would wipe %d.", len(*jobModels))
+	}
+}
+
 func (r *Repository) ProcessEntry() {
 	jobModel := &models.Jobs{}
 
@@ -168,7 +178,22 @@ func (r *Repository) AddJob() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("Job id = %d.\n", j.ID())
+	fmt.Printf("Tick-Job id = %d.\n", j.ID())
+
+	cleanUpTask := gocron.NewTask(
+		r.CleaningDatabase,
+	)
+
+	cleanUpJob := gocron.CronJob(
+		"0 0 * * *",
+		false,
+	)
+
+	j, err = (*r.Scheduler).NewJob(cleanUpJob, cleanUpTask)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("CleanUp-Job id = %d.\n", j.ID())
 }
 
 func (r *Repository) DeleteJob(c *gin.Context) {
