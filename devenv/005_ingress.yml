@@ -5,6 +5,7 @@ metadata:
   namespace: dev
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: 30g
 spec:
   ingressClassName: nginx
   rules:
