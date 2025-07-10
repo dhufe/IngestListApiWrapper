@@ -102,7 +102,7 @@ func (r *Repository) CleaningDatabase() {
 		Find(&jobModels)
 	if result.Error == nil {
 		fmt.Printf("%s database cleanup executed.\n", time.Now())
-		fmt.Printf("This job would wipe %d.", len(*jobModels))
+		fmt.Printf("This job would wipe %d jobs.\n", len(*jobModels))
 	}
 }
 
