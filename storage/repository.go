@@ -33,12 +33,14 @@ func (r *Repository) getDefaultResponse(c *gin.Context) {
 }
 
 func (r *Repository) CreateRoutes(router *gin.Engine) {
-	router.GET("api", r.getDefaultResponse)
+	api := router.Group("/api")
+	api.GET("/", r.getDefaultResponse)
 	router.GET("/", r.getDefaultResponse)
-	router.POST("/api/upload", r.CreateJob)
-	router.GET("/api/jobs", r.GetJobs)
-	router.GET("/api/job/:id", r.GetJobByID)
-	router.DELETE("/api/job/:id", r.DeleteJob)
+	api.POST("/upload", r.CreateJob)
+	api.GET("/jobs", r.GetJobs)
+
+	api.GET("/job/:id", r.GetJobByID)
+	api.DELETE("/job/:id", r.DeleteJob)
 }
 
 func (r *Repository) CreateJob(c *gin.Context) {
