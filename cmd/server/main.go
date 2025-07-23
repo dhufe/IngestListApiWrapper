@@ -8,28 +8,29 @@ import (
 	"syscall"
 	"time"
 
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/models"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/http/handlers"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/persistence"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/scheduler"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/worker"
 	"github.com/dhufe/IngestListApiWrapper/internal/interfaces/http"
+	"github.com/dhufe/IngestListApiWrapper/pkg/config"
 )
 
 func main() {
-	// Datenbank initialisieren
-	db, err := gorm.Open(sqlite.Open("tasks.db"), &gorm.Config{})
+	cfg, err := config.LoadConfig("")
 	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+		log.Fatalf("Failed to load config file: %v\n", err)
 	}
 
-	// Datenbank migrieren
-	if err := db.AutoMigrate(&models.Task{}, &models.TaskOutput{}); err != nil {
-		log.Fatalf("Failed to migrate database: %v", err)
+	db, err := persistence.NewDatabase(
+		cfg.Database.Driver,
+		cfg.Database.DSN,
+		cfg.Database.MaxOpen,
+		cfg.Database.MaxIdle,
+	)
+	if err != nil {
+		log.Fatalf("Failed to initialize the database: %v\n", err)
 	}
 
 	// Repository erstellen
