@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -8,19 +9,21 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/interfaces"
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/models"
 )
 
 type TaskHandler struct {
-	service    *services.TaskService
-	outputRepo interfaces.TaskOutputRepository
+	service *services.TaskService
 }
 
-func NewTaskHandler(service *services.TaskService, outputRepo interfaces.TaskOutputRepository) *TaskHandler {
+const (
+	VERSION         = "0.4"
+	DefaultResponse = "IngestList-Wrapper version %s is running"
+)
+
+func NewTaskHandler(service *services.TaskService) *TaskHandler {
 	return &TaskHandler{
-		service:    service,
-		outputRepo: outputRepo,
+		service: service,
 	}
 }
 
@@ -137,33 +140,6 @@ func (h *TaskHandler) DeleteTask(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (h *TaskHandler) GetTaskOutput(c *gin.Context) {
-	taskID, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid task ID"})
-		return
-	}
-
-	outputs, err := h.service.GetTaskOutput(c.Request.Context(), uint(taskID))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, outputs)
-}
-
-func (h *TaskHandler) DeleteTaskOutput(c *gin.Context) {
-	outputID, err := strconv.ParseUint(c.Param("output_id"), 10, 32)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid output ID"})
-		return
-	}
-
-	if err := h.service.DeleteTaskOutput(c.Request.Context(), uint(outputID)); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.Status(http.StatusNoContent)
+func (h *TaskHandler) DefaultReponse(c *gin.Context) {
+	c.String(http.StatusOK, fmt.Sprintf(DefaultResponse, VERSION))
 }

@@ -13,21 +13,18 @@ import (
 )
 
 type TaskWorker struct {
-	repo       interfaces.TaskRepository
-	outputRepo interfaces.TaskOutputRepository
-	semaphore  chan struct{}
-	wg         sync.WaitGroup
+	repo      interfaces.TaskRepository
+	semaphore chan struct{}
+	wg        sync.WaitGroup
 }
 
 func NewTaskWorker(
 	repo interfaces.TaskRepository,
-	outputRepo interfaces.TaskOutputRepository,
 	maxWorkers int,
 ) *TaskWorker {
 	return &TaskWorker{
-		repo:       repo,
-		outputRepo: outputRepo,
-		semaphore:  make(chan struct{}, maxWorkers),
+		repo:      repo,
+		semaphore: make(chan struct{}, maxWorkers),
 	}
 }
 
@@ -69,14 +66,8 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 		task.Status = models.StatusCompleted
 	}
 
-	// Ausgabe in separater Tabelle speichern
-	outputRecord := &models.TaskOutput{
-		TaskID: task.ID,
-		Output: output,
-	}
-	if err := w.outputRepo.Create(ctx, outputRecord); err != nil {
-		log.Printf("Error saving task output: %v", err)
-	}
+	// Ausgabe speichern
+	task.Output = output
 
 	// Task aktualisieren
 	if err := w.repo.Update(ctx, task); err != nil {
