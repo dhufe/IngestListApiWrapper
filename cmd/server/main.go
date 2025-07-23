@@ -38,11 +38,11 @@ func main() {
 	// Service erstellen
 	taskService := services.NewTaskService(taskRepo)
 
-	// Worker erstellen (max. 3 parallele Tasks)
-	taskWorker := worker.NewTaskWorker(taskRepo, 3)
+	// Worker erstellen (max. Anzahl v. parallelen Tasks)
+	taskWorker := worker.NewTaskWorker(taskRepo, cfg.TaskScheduler.MaxWorkers)
 
 	// Scheduler starten
-	taskScheduler := scheduler.NewTaskScheduler(taskService, taskWorker)
+	taskScheduler := scheduler.NewTaskScheduler(taskService, taskWorker, cfg.TaskScheduler.Interval)
 	taskScheduler.Start()
 	defer taskScheduler.Stop()
 
