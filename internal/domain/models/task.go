@@ -7,10 +7,11 @@ import (
 type TaskStatus string
 
 const (
-	StatusPending   TaskStatus = "Pending"
-	StatusRunning   TaskStatus = "Running"
-	StatusCompleted TaskStatus = "Completed"
-	StatusFailed    TaskStatus = "Failed"
+	StatusPending     TaskStatus = "Pending"
+	StatusRunning     TaskStatus = "Running"
+	StatusProgressing TaskStatus = "Progressing"
+	StatusCompleted   TaskStatus = "Completed"
+	StatusFailed      TaskStatus = "Failed"
 )
 
 type Task struct {

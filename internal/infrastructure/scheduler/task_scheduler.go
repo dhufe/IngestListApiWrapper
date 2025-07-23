@@ -4,10 +4,9 @@ import (
 	"context"
 	"log"
 
-	"github.com/robfig/cron/v3"
-
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/worker"
+	"github.com/robfig/cron/v3"
 )
 
 type TaskScheduler struct {
@@ -38,7 +37,7 @@ func (s *TaskScheduler) Start() {
 
 		// Tasks verarbeiten
 		for _, task := range tasks {
-			s.worker.StartTaskProcessing(ctx, task)
+			s.worker.StartTaskProcessing(ctx, &task)
 		}
 	})
 	if err != nil {
@@ -52,4 +51,3 @@ func (s *TaskScheduler) Stop() {
 	s.cron.Stop()
 	s.worker.Wait()
 }
-
