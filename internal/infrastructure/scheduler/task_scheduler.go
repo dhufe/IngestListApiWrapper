@@ -19,7 +19,7 @@ func NewTaskScheduler(service *services.TaskService, worker *worker.TaskWorker) 
 	return &TaskScheduler{
 		service: service,
 		worker:  worker,
-		cron:    cron.New(),
+		cron:    cron.New(cron.WithSeconds()),
 	}
 }
 
