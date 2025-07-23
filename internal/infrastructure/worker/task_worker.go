@@ -19,7 +19,7 @@ type TaskWorker struct {
 }
 
 const (
-	COMMAND = ""
+	COMMAND = "ls"
 )
 
 func NewTaskWorker(
@@ -64,11 +64,8 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 		task.Error = stderrOutput
 	} else {
 		task.Status = models.StatusCompleted
+		task.Output = output
 	}
-
-	// Ausgabe speichern
-	task.Output = output
-
 	// Task aktualisieren
 	if err := w.repo.Update(ctx, task); err != nil {
 		log.Printf("Error updating task after completion: %v", err)
