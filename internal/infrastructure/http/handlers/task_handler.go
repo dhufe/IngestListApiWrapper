@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -29,10 +28,7 @@ func NewTaskHandler(service *services.TaskService) *TaskHandler {
 
 func (h *TaskHandler) CreateTask(c *gin.Context) {
 	var request struct {
-		Title     string     `json:"title" binding:"required"`
-		Command   string     `json:"command"`
-		Arguments string     `json:"arguments"`
-		DueDate   *time.Time `json:"due_date"`
+		FileName string `json:"filename" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -42,10 +38,7 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 
 	task, err := h.service.CreateTask(
 		c.Request.Context(),
-		request.Title,
-		request.Command,
-		request.Arguments,
-		request.DueDate,
+		request.FileName,
 	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -89,11 +82,8 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 	}
 
 	var request struct {
-		Title     string     `json:"title" binding:"required"`
-		Command   string     `json:"comand"`
-		Arguments string     `json:"arguments"`
-		Status    string     `json:"status"`
-		DueDate   *time.Time `json:"due_date"`
+		FileName string `json:"filename" binding:"required"`
+		Status   string `json:"status"`
 	}
 
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -111,11 +101,8 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 	task, err := h.service.UpdateTask(
 		c.Request.Context(),
 		uint(id),
-		request.Title,
-		request.Command,
-		request.Arguments,
+		request.FileName,
 		status,
-		request.DueDate,
 	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
