@@ -9,14 +9,12 @@ import (
 )
 
 type TaskService struct {
-	repo       interfaces.TaskRepository
-	outputRepo interfaces.TaskOutputRepository
+	repo interfaces.TaskRepository
 }
 
-func NewTaskService(repo interfaces.TaskRepository, outputRepo interfaces.TaskOutputRepository) *TaskService {
+func NewTaskService(repo interfaces.TaskRepository) *TaskService {
 	return &TaskService{
-		repo:       repo,
-		outputRepo: outputRepo,
+		repo: repo,
 	}
 }
 
@@ -37,14 +35,6 @@ func (s *TaskService) FindDueTasks(ctx context.Context) ([]models.Task, error) {
 	var tasks []models.Task
 	err := s.repo.FindDueTasks(ctx, &tasks)
 	return tasks, err
-}
-
-func (s *TaskService) GetTaskOutput(ctx context.Context, taskID uint) ([]models.TaskOutput, error) {
-	return s.outputRepo.FindByTaskID(ctx, taskID)
-}
-
-func (s *TaskService) DeleteTaskOutput(ctx context.Context, outputID uint) error {
-	return s.outputRepo.Delete(ctx, outputID)
 }
 
 func (s *TaskService) GetTask(ctx context.Context, taskID uint) (*models.Task, error) {

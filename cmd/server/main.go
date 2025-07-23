@@ -35,13 +35,11 @@ func main() {
 
 	// Repository erstellen
 	taskRepo := persistence.NewGormTaskRepository(db)
-	outputRepo := persistence.NewGormTaskOutputRepository(db)
-
 	// Service erstellen
-	taskService := services.NewTaskService(taskRepo, outputRepo)
+	taskService := services.NewTaskService(taskRepo)
 
 	// Worker erstellen (max. 3 parallele Tasks)
-	taskWorker := worker.NewTaskWorker(taskRepo, outputRepo, 3)
+	taskWorker := worker.NewTaskWorker(taskRepo, 3)
 
 	// Scheduler starten
 	taskScheduler := scheduler.NewTaskScheduler(taskService, taskWorker)
@@ -49,7 +47,7 @@ func main() {
 	defer taskScheduler.Stop()
 
 	// HTTP-Handler erstellen
-	taskHandler := handlers.NewTaskHandler(taskService, outputRepo)
+	taskHandler := handlers.NewTaskHandler(taskService)
 
 	// HTTP-Server erstellen und starten
 	server := http.NewServer(taskHandler)
