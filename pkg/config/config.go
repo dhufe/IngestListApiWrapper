@@ -41,7 +41,7 @@ func LoadConfig(path string) (*Config, error) {
 			MaxIdle int    `yaml:"max_idle"`
 		}{
 			Driver:  "sqlite",
-			DSN:     "taskmanager.db",
+			DSN:     "tasks.db",
 			MaxOpen: 10,
 			MaxIdle: 5,
 		},
@@ -81,7 +81,7 @@ func getConfigPath(path string) string {
 	possiblePaths := []string{
 		"./config.yaml",
 		"./config/config.yaml",
-		"/etc/taskmanager/config.yaml",
+		"/etc/IngestListApiWrapper/config.yaml",
 	}
 
 	for _, p := range possiblePaths {
