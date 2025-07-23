@@ -4,28 +4,35 @@ import (
 	"context"
 	"log"
 
+	"github.com/robfig/cron/v3"
+
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/worker"
-	"github.com/robfig/cron/v3"
 )
 
 type TaskScheduler struct {
-	service *services.TaskService
-	worker  *worker.TaskWorker
-	cron    *cron.Cron
+	service  *services.TaskService
+	worker   *worker.TaskWorker
+	cron     *cron.Cron
+	schedule string
 }
 
-func NewTaskScheduler(service *services.TaskService, worker *worker.TaskWorker) *TaskScheduler {
+func NewTaskScheduler(
+	service *services.TaskService,
+	worker *worker.TaskWorker,
+	schedule string,
+) *TaskScheduler {
 	return &TaskScheduler{
-		service: service,
-		worker:  worker,
-		cron:    cron.New(cron.WithSeconds()),
+		service:  service,
+		worker:   worker,
+		cron:     cron.New(cron.WithSeconds()),
+		schedule: schedule,
 	}
 }
 
 func (s *TaskScheduler) Start() {
 	// Alle 30 Sekunden nach Tasks suchen
-	_, err := s.cron.AddFunc("*/30 * * * * *", func() {
+	_, err := s.cron.AddFunc(s.schedule, func() {
 		ctx := context.Background()
 
 		// Überfällige Tasks finden
