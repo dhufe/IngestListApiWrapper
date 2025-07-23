@@ -11,7 +11,7 @@ func SetupTaskRoutes(router *gin.Engine, handler *handlers.TaskHandler) {
 	{
 		taskRoutes.POST("/create", handler.CreateTask)
 		taskRoutes.GET("/", handler.DefaultReponse)
-
+		taskRoutes.GET("/jobs", handler.GetAllTasks)
 		taskRoutes.GET("/job/:id", handler.GetTask)
 		taskRoutes.PUT("/job/:id", handler.UpdateTask)
 		taskRoutes.DELETE("job/:id", handler.DeleteTask)
