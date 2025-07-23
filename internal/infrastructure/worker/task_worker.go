@@ -18,6 +18,10 @@ type TaskWorker struct {
 	wg        sync.WaitGroup
 }
 
+const (
+	COMMAND = ""
+)
+
 func NewTaskWorker(
 	repo interfaces.TaskRepository,
 	maxWorkers int,
@@ -44,11 +48,7 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 	}
 
 	// Befehl ausführen
-	cmd := exec.CommandContext(ctx, task.Command)
-	if task.Arguments != "" {
-		cmd.Args = append(cmd.Args, task.Arguments)
-	}
-
+	cmd := exec.CommandContext(ctx, COMMAND)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr

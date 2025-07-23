@@ -54,7 +54,6 @@ func NewDatabase(driver, dsn string, maxOpen, maxIdle int) (*gorm.DB, error) {
 		// AutoMigrate für alle Modelle
 		if err := db.AutoMigrate(
 			&models.Task{},
-			&models.TaskOutput{},
 		); err != nil {
 			log.Printf("Warning: AutoMigrate failed: %v", err)
 		}

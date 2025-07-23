@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"time"
 
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/interfaces"
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/models"
@@ -18,13 +17,10 @@ func NewTaskService(repo interfaces.TaskRepository) *TaskService {
 	}
 }
 
-func (s *TaskService) CreateTask(ctx context.Context, title, command, arguments string, dueDate *time.Time) (*models.Task, error) {
+func (s *TaskService) CreateTask(ctx context.Context, filename string) (*models.Task, error) {
 	task := &models.Task{
-		Title:     title,
-		Command:   command,
-		Arguments: arguments,
-		Status:    models.StatusPending,
-		DueDate:   dueDate,
+		FileName: filename,
+		Status:   models.StatusPending,
 	}
 
 	err := s.repo.Create(ctx, task)
@@ -50,14 +46,16 @@ func (s *TaskService) GetAllTasks(ctx context.Context) ([]models.Task, error) {
 	return tasks, err
 }
 
-func (s *TaskService) UpdateTask(ctx context.Context, taskId uint, title, command, arguments string, status models.TaskStatus, dueDate *time.Time) (*models.Task, error) {
+func (s *TaskService) UpdateTask(
+	ctx context.Context,
+	taskId uint,
+	filename string,
+	status models.TaskStatus,
+) (*models.Task, error) {
 	task := &models.Task{
-		ID:        taskId,
-		Title:     title,
-		Command:   command,
-		Arguments: arguments,
-		Status:    status,
-		DueDate:   dueDate,
+		ID:       taskId,
+		FileName: filename,
+		Status:   status,
 	}
 
 	err := s.repo.Update(ctx, task)
