@@ -2,7 +2,6 @@ package persistence
 
 import (
 	"context"
-	"time"
 
 	"gorm.io/gorm"
 
@@ -44,7 +43,7 @@ func (r *GormTaskRepository) Delete(ctx context.Context, id uint) error {
 
 func (r *GormTaskRepository) FindDueTasks(ctx context.Context, tasks *[]models.Task) error {
 	err := r.db.WithContext(ctx).
-		Where("status = ? AND due_date <= ?", models.StatusPending, time.Now()).
+		Where("status = ?", models.StatusPending).
 		Find(tasks).Error
 	return err
 }
