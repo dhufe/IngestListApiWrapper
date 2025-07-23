@@ -42,10 +42,9 @@ func (r *GormTaskRepository) Delete(ctx context.Context, id uint) error {
 	return r.db.WithContext(ctx).Delete(&models.Task{}, id).Error
 }
 
-func (r *GormTaskRepository) FindDueTasks(ctx context.Context) ([]models.Task, error) {
-	var tasks []models.Task
+func (r *GormTaskRepository) FindDueTasks(ctx context.Context, tasks *[]models.Task) error {
 	err := r.db.WithContext(ctx).
 		Where("status = ? AND due_date <= ?", models.StatusPending, time.Now()).
-		Find(&tasks).Error
-	return tasks, err
+		Find(tasks).Error
+	return err
 }

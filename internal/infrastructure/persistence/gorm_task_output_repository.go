@@ -3,10 +3,9 @@ package persistence
 import (
 	"context"
 
-	"gorm.io/gorm"
-
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/interfaces"
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/models"
+	"gorm.io/gorm"
 )
 
 type GormTaskOutputRepository struct {
@@ -21,10 +20,7 @@ func (r *GormTaskOutputRepository) Create(ctx context.Context, output *models.Ta
 	return r.db.WithContext(ctx).Create(output).Error
 }
 
-func (r *GormTaskOutputRepository) FindByTaskID(
-	ctx context.Context,
-	taskID uint,
-) ([]models.TaskOutput, error) {
+func (r *GormTaskOutputRepository) FindByTaskID(ctx context.Context, taskID uint) ([]models.TaskOutput, error) {
 	var outputs []models.TaskOutput
 	err := r.db.WithContext(ctx).Where("task_id = ?", taskID).Find(&outputs).Error
 	return outputs, err

@@ -8,22 +8,28 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
+	"github.com/dhufe/IngestListApiWrapper/internal/domain/interfaces"
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/models"
 )
 
 type TaskHandler struct {
-	service *services.TaskService
+	service    *services.TaskService
+	outputRepo interfaces.TaskOutputRepository
 }
 
-func NewTaskHandler(service *services.TaskService) *TaskHandler {
-	return &TaskHandler{service: service}
+func NewTaskHandler(service *services.TaskService, outputRepo interfaces.TaskOutputRepository) *TaskHandler {
+	return &TaskHandler{
+		service:    service,
+		outputRepo: outputRepo,
+	}
 }
 
 func (h *TaskHandler) CreateTask(c *gin.Context) {
 	var request struct {
-		Title       string     `json:"title" binding:"required"`
-		Description string     `json:"description"`
-		DueDate     *time.Time `json:"due_date"`
+		Title     string     `json:"title" binding:"required"`
+		Command   string     `json:"command"`
+		Arguments string     `json:"arguments"`
+		DueDate   *time.Time `json:"due_date"`
 	}
 
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -34,7 +40,8 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 	task, err := h.service.CreateTask(
 		c.Request.Context(),
 		request.Title,
-		request.Description,
+		request.Command,
+		request.Arguments,
 		request.DueDate,
 	)
 	if err != nil {
@@ -79,10 +86,11 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 	}
 
 	var request struct {
-		Title       string     `json:"title" binding:"required"`
-		Description string     `json:"description"`
-		Status      string     `json:"status"`
-		DueDate     *time.Time `json:"due_date"`
+		Title     string     `json:"title" binding:"required"`
+		Command   string     `json:"comand"`
+		Arguments string     `json:"arguments"`
+		Status    string     `json:"status"`
+		DueDate   *time.Time `json:"due_date"`
 	}
 
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -91,7 +99,7 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 	}
 
 	status := models.TaskStatus(request.Status)
-	if status != models.StatusPending && status != models.StatusInProgress &&
+	if status != models.StatusPending && status != models.StatusProgressing &&
 		status != models.StatusCompleted && status != models.StatusFailed {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid status"})
 		return
@@ -101,7 +109,8 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 		c.Request.Context(),
 		uint(id),
 		request.Title,
-		request.Description,
+		request.Command,
+		request.Arguments,
 		status,
 		request.DueDate,
 	)
@@ -121,6 +130,37 @@ func (h *TaskHandler) DeleteTask(c *gin.Context) {
 	}
 
 	if err := h.service.DeleteTask(c.Request.Context(), uint(id)); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+func (h *TaskHandler) GetTaskOutput(c *gin.Context) {
+	taskID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid task ID"})
+		return
+	}
+
+	outputs, err := h.service.GetTaskOutput(c.Request.Context(), uint(taskID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, outputs)
+}
+
+func (h *TaskHandler) DeleteTaskOutput(c *gin.Context) {
+	outputID, err := strconv.ParseUint(c.Param("output_id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid output ID"})
+		return
+	}
+
+	if err := h.service.DeleteTaskOutput(c.Request.Context(), uint(outputID)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
