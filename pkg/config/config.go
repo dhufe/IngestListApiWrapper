@@ -19,8 +19,9 @@ type Config struct {
 		MaxIdle int    `yaml:"max_idle"`
 	} `yaml:"database"`
 	TaskScheduler struct {
-		Interval   string `yaml:"interval"`
-		MaxWorkers int    `yaml:"max_workers"`
+		Interval        string `yaml:"interval"`
+		FileStoragePath string `yaml:"file_storage_path"`
+		MaxWorkers      int    `yaml:"max_workers"`
 	} `yaml:"task_scheduler"`
 	Security struct {
 		SecretKey string `yaml:"secret_key"`
@@ -49,11 +50,13 @@ func LoadConfig(path string) (*Config, error) {
 			MaxIdle: 5,
 		},
 		TaskScheduler: struct {
-			Interval   string `yaml:"interval"`
-			MaxWorkers int    `yaml:"max_workers"`
+			Interval        string `yaml:"interval"`
+			FileStoragePath string `yaml:"file_storage_path"`
+			MaxWorkers      int    `yaml:"max_workers"`
 		}{
-			Interval:   "*/30 * * * * *",
-			MaxWorkers: 3,
+			Interval:        "*/30 * * * * *",
+			FileStoragePath: "data",
+			MaxWorkers:      3,
 		},
 		Security: struct {
 			SecretKey string `yaml:"secret_key"`
