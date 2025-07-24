@@ -19,7 +19,7 @@ type TaskWorker struct {
 }
 
 const (
-	COMMAND = "ls"
+	COMMAND = "third/bin/ingestlist"
 )
 
 func NewTaskWorker(
@@ -47,8 +47,9 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 		return
 	}
 
+	args := []string{"-c", "third/cfg/sampleconfig.xml", "identify", task.FileName}
 	// Befehl ausführen
-	cmd := exec.CommandContext(ctx, COMMAND)
+	cmd := exec.CommandContext(ctx, COMMAND, args...)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
