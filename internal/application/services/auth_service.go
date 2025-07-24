@@ -3,12 +3,13 @@ package services
 import (
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/user/interfaces"
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/user/models"
-
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -37,16 +38,14 @@ func NewAuthService(
 }
 
 func (s *AuthService) Authenticate(ctx context.Context, creds models.UserCredentials) (string, error) {
-	user, err := s.userRepo.FindByUsername(ctx, creds.Email)
+	user, err := s.userRepo.FindByEmail(ctx, creds.Email)
 	if err != nil {
 		return "", ErrUserNotFound
 	}
 
-	/*
-		if !checkPasswordHash(creds.Password, user.Password) {
-			return "", ErrInvalidCredentials
-		}
-	*/
+	if err := s.VerifyPassword(user.Password, creds.Password); err != nil {
+		return "", ErrInvalidCredentials
+	}
 
 	return s.generateToken(user.ID)
 }
@@ -60,6 +59,23 @@ func (s *AuthService) generateToken(userID uint) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(s.secretKey))
+}
+
+// Beim Speichern:
+func (s *AuthService) HashPassword(password string) (string, error) {
+	hashedBytes, err := bcrypt.GenerateFromPassword(
+		[]byte(strings.TrimSpace(password)),
+		bcrypt.DefaultCost,
+	)
+	return string(hashedBytes), err
+}
+
+// Beim Vergleichen:
+func (s *AuthService) VerifyPassword(storedHash, inputPassword string) error {
+	return bcrypt.CompareHashAndPassword(
+		[]byte(storedHash),
+		[]byte(strings.TrimSpace(inputPassword)),
+	)
 }
 
 func (s *AuthService) ValidateToken(tokenString string) (uint, error) {

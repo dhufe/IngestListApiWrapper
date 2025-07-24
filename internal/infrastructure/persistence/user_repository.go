@@ -27,9 +27,9 @@ func (r *UserRepository) FindByID(ctx context.Context, id uint) (*models.User, e
 	return &user, err
 }
 
-func (r *UserRepository) FindByUsername(ctx context.Context, username string) (*models.User, error) {
+func (r *UserRepository) FindByEmail(ctx context.Context, email string) (*models.User, error) {
 	var user models.User
-	err := r.db.WithContext(ctx).First(&user, username).Error
+	err := r.db.WithContext(ctx).First(&user, "email = ?", email).Error
 	return &user, err
 }
 

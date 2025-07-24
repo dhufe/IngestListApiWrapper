@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
@@ -43,7 +42,6 @@ func (m *AuthMiddleware) RequireAuth() gin.HandlerFunc {
 			return
 		}
 
-		log.Printf(tokenParts[1])
 		// 3. Token validieren
 		userID, err := m.authService.ValidateToken(tokenParts[1])
 		if err != nil {
