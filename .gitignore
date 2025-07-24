@@ -34,3 +34,4 @@ ingestlistapiwrapper
 server 
 config/**
 tasks.db
+data/**
