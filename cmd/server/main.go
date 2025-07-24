@@ -56,7 +56,7 @@ func main() {
 	// server := http.NewServer(taskHandler)
 	server := http.NewRouter(authService, taskService)
 	go func() {
-		if err := server.Run(); err != nil {
+		if err := server.Run(cfg.Server.Host + ":" + cfg.Server.Port); err != nil {
 			log.Fatalf("Server error: %v", err)
 		}
 	}()
