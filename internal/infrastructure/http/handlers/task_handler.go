@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/models"
+	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
 )
 
 type TaskHandler struct {

@@ -5,8 +5,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/interfaces"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/models"
+	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/interfaces"
+	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
 )
 
 type GormTaskRepository struct {

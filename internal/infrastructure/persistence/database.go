@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/models"
+	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
 )
 
 var (
