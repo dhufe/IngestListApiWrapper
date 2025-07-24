@@ -3,12 +3,13 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"path/filepath"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
 
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type TaskHandler struct {
@@ -27,18 +28,31 @@ func NewTaskHandler(service *services.TaskService) *TaskHandler {
 }
 
 func (h *TaskHandler) CreateTask(c *gin.Context) {
-	var request struct {
-		FileName string `json:"filename" binding:"required"`
-	}
+	// Dateiupload
+	file, err := c.FormFile("file")
+	/*
+		var request struct {
+			FileName string `json:"filename" binding:"required"`
+		}
 
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		if err := c.ShouldBindJSON(&request); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	*/
+
+	fileName := uuid.New().String() + "_" + file.Filename
+	fileStorePath := filepath.Join(h.service.FileStoragePath(), fileName)
+
+	err = c.SaveUploadedFile(file, fileStorePath)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "unable to save file"})
 		return
 	}
 
 	task, err := h.service.CreateTask(
 		c.Request.Context(),
-		request.FileName,
+		fileName,
 	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
