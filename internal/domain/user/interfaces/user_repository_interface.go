@@ -1,4 +1,4 @@
-package repositories
+package interfaces
 
 import (
 	"context"
@@ -11,4 +11,5 @@ type UserRepository interface {
 	FindByUsername(ctx context.Context, username string) (*models.User, error)
 	Create(ctx context.Context, user *models.User) error
 	Update(ctx context.Context, user *models.User) error
+	Delete(ctx context.Context, id uint) error
 }

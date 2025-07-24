@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"os"
 	"os/signal"
@@ -9,7 +8,7 @@ import (
 	"time"
 
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
-	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/http/handlers"
+
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/persistence"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/scheduler"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/worker"
@@ -34,7 +33,8 @@ func main() {
 	}
 
 	// Repository erstellen
-	taskRepo := persistence.NewGormTaskRepository(db)
+	taskRepo := persistence.NewTaskRepository(db)
+	userRepo := persistence.NewUserRepository(db)
 	// Service erstellen
 	taskService := services.NewTaskService(taskRepo)
 
@@ -46,13 +46,17 @@ func main() {
 	taskScheduler.Start()
 	defer taskScheduler.Stop()
 
-	// HTTP-Handler erstellen
-	taskHandler := handlers.NewTaskHandler(taskService)
+	authService := services.NewAuthService(
+		userRepo,
+		"your-secret-key-for-jwt",
+		2*time.Hour,
+	)
 
 	// HTTP-Server erstellen und starten
-	server := http.NewServer(taskHandler)
+	// server := http.NewServer(taskHandler)
+	server := http.NewRouter(authService, taskService)
 	go func() {
-		if err := server.Start(); err != nil {
+		if err := server.Run(); err != nil {
 			log.Fatalf("Server error: %v", err)
 		}
 	}()
@@ -62,14 +66,6 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.Println("Shutting down server...")
-
-	// Server herunterfahren
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("Server shutdown error: %v", err)
-	}
 
 	log.Println("Server exited")
 }
