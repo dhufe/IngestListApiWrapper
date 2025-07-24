@@ -36,7 +36,7 @@ func main() {
 	taskRepo := persistence.NewTaskRepository(db)
 	userRepo := persistence.NewUserRepository(db)
 	// Service erstellen
-	taskService := services.NewTaskService(taskRepo)
+	taskService := services.NewTaskService(taskRepo, cfg.TaskScheduler.FileStoragePath)
 
 	// Worker erstellen (max. Anzahl v. parallelen Tasks)
 	taskWorker := worker.NewTaskWorker(taskRepo, cfg.TaskScheduler.MaxWorkers)

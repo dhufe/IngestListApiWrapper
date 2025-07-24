@@ -8,12 +8,14 @@ import (
 )
 
 type TaskService struct {
-	repo interfaces.TaskRepository
+	repo            interfaces.TaskRepository
+	fileStoragePath string
 }
 
-func NewTaskService(repo interfaces.TaskRepository) *TaskService {
+func NewTaskService(repo interfaces.TaskRepository, fileStoragePath string) *TaskService {
 	return &TaskService{
-		repo: repo,
+		repo:            repo,
+		fileStoragePath: fileStoragePath,
 	}
 }
 
@@ -25,6 +27,10 @@ func (s *TaskService) CreateTask(ctx context.Context, filename string) (*models.
 
 	err := s.repo.Create(ctx, task)
 	return task, err
+}
+
+func (s *TaskService) FileStoragePath() string {
+	return s.fileStoragePath
 }
 
 func (s *TaskService) FindPendingTasks(ctx context.Context) ([]models.Task, error) {
