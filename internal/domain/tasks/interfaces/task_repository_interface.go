@@ -12,5 +12,5 @@ type TaskRepository interface {
 	FindAll(ctx context.Context) ([]models.Task, error)
 	Update(ctx context.Context, task *models.Task) error
 	Delete(ctx context.Context, id uint) error
-	FindDueTasks(ctx context.Context, tasks *[]models.Task) error
+	FindPendingTasks(ctx context.Context, tasks *[]models.Task) error
 }

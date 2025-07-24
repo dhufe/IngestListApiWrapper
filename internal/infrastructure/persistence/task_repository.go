@@ -41,7 +41,7 @@ func (r *TaskRepository) Delete(ctx context.Context, id uint) error {
 	return r.db.WithContext(ctx).Delete(&models.Task{}, id).Error
 }
 
-func (r *TaskRepository) FindDueTasks(ctx context.Context, tasks *[]models.Task) error {
+func (r *TaskRepository) FindPendingTasks(ctx context.Context, tasks *[]models.Task) error {
 	err := r.db.WithContext(ctx).
 		Where("status = ?", models.StatusPending).
 		Find(tasks).Error

@@ -48,7 +48,7 @@ func main() {
 
 	authService := services.NewAuthService(
 		userRepo,
-		"your-secret-key-for-jwt",
+		cfg.Security.SecretKey,
 		2*time.Hour,
 	)
 
