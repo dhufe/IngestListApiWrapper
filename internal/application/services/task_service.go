@@ -27,9 +27,9 @@ func (s *TaskService) CreateTask(ctx context.Context, filename string) (*models.
 	return task, err
 }
 
-func (s *TaskService) FindDueTasks(ctx context.Context) ([]models.Task, error) {
+func (s *TaskService) FindPendingTasks(ctx context.Context) ([]models.Task, error) {
 	var tasks []models.Task
-	err := s.repo.FindDueTasks(ctx, &tasks)
+	err := s.repo.FindPendingTasks(ctx, &tasks)
 	return tasks, err
 }
 

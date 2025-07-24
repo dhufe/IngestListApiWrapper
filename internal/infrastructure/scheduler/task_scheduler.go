@@ -36,7 +36,7 @@ func (s *TaskScheduler) Start() {
 		ctx := context.Background()
 
 		// Überfällige Tasks finden
-		tasks, err := s.service.FindDueTasks(ctx)
+		tasks, err := s.service.FindPendingTasks(ctx)
 		if err != nil {
 			log.Printf("Error finding due tasks: %v", err)
 			return

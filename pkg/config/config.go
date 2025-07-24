@@ -22,6 +22,9 @@ type Config struct {
 		Interval   string `yaml:"interval"`
 		MaxWorkers int    `yaml:"max_workers"`
 	} `yaml:"task_scheduler"`
+	Security struct {
+		SecretKey string `yaml:"secret_key"`
+	} `yaml:"security"`
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -51,6 +54,11 @@ func LoadConfig(path string) (*Config, error) {
 		}{
 			Interval:   "*/30 * * * * *",
 			MaxWorkers: 3,
+		},
+		Security: struct {
+			SecretKey string `yaml:"secret_key"`
+		}{
+			SecretKey: "your-secret-key",
 		},
 	}
 
