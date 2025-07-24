@@ -10,7 +10,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
+	TaskModel "github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
+	UserModel "github.com/dhufe/IngestListApiWrapper/internal/domain/user/models"
 )
 
 var (
@@ -53,7 +54,8 @@ func NewDatabase(driver, dsn string, maxOpen, maxIdle int) (*gorm.DB, error) {
 
 		// AutoMigrate für alle Modelle
 		if err := db.AutoMigrate(
-			&models.Task{},
+			&TaskModel.Task{},
+			&UserModel.User{},
 		); err != nil {
 			log.Printf("Warning: AutoMigrate failed: %v", err)
 		}

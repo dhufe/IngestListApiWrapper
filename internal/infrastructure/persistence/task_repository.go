@@ -9,39 +9,39 @@ import (
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
 )
 
-type GormTaskRepository struct {
+type TaskRepository struct {
 	db *gorm.DB
 }
 
-func NewGormTaskRepository(db *gorm.DB) interfaces.TaskRepository {
-	return &GormTaskRepository{db: db}
+func NewTaskRepository(db *gorm.DB) interfaces.TaskRepository {
+	return &TaskRepository{db: db}
 }
 
-func (r *GormTaskRepository) Create(ctx context.Context, task *models.Task) error {
+func (r *TaskRepository) Create(ctx context.Context, task *models.Task) error {
 	return r.db.WithContext(ctx).Create(task).Error
 }
 
-func (r *GormTaskRepository) FindByID(ctx context.Context, id uint) (*models.Task, error) {
+func (r *TaskRepository) FindByID(ctx context.Context, id uint) (*models.Task, error) {
 	var task models.Task
 	err := r.db.WithContext(ctx).First(&task, id).Error
 	return &task, err
 }
 
-func (r *GormTaskRepository) FindAll(ctx context.Context) ([]models.Task, error) {
+func (r *TaskRepository) FindAll(ctx context.Context) ([]models.Task, error) {
 	var tasks []models.Task
 	err := r.db.WithContext(ctx).Find(&tasks).Error
 	return tasks, err
 }
 
-func (r *GormTaskRepository) Update(ctx context.Context, task *models.Task) error {
+func (r *TaskRepository) Update(ctx context.Context, task *models.Task) error {
 	return r.db.WithContext(ctx).Save(task).Error
 }
 
-func (r *GormTaskRepository) Delete(ctx context.Context, id uint) error {
+func (r *TaskRepository) Delete(ctx context.Context, id uint) error {
 	return r.db.WithContext(ctx).Delete(&models.Task{}, id).Error
 }
 
-func (r *GormTaskRepository) FindDueTasks(ctx context.Context, tasks *[]models.Task) error {
+func (r *TaskRepository) FindDueTasks(ctx context.Context, tasks *[]models.Task) error {
 	err := r.db.WithContext(ctx).
 		Where("status = ?", models.StatusPending).
 		Find(tasks).Error
