@@ -32,7 +32,7 @@ go.work.sum
 # .vscode/
 ingestlistapiwrapper
 server 
-config/**
+
 tasks.db
 data/**
 third/**
