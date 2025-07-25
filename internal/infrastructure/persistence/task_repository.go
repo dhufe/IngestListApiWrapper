@@ -41,6 +41,15 @@ func (r *TaskRepository) Delete(ctx context.Context, id uint) error {
 	return r.db.WithContext(ctx).Delete(&models.Task{}, id).Error
 }
 
+func (r *TaskRepository) FindByType(
+	ctx context.Context,
+	tasks *[]models.Task,
+	taskType string,
+) error {
+	err := r.db.WithContext(ctx).Where("type = ?", taskType).Find(tasks).Error
+	return err
+}
+
 func (r *TaskRepository) FindPendingTasks(ctx context.Context, tasks *[]models.Task) error {
 	err := r.db.WithContext(ctx).
 		Where("status = ?", models.StatusPending).
