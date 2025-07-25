@@ -47,7 +47,8 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 		return
 	}
 
-	args := []string{"-c", "third/cfg/sampleconfig.xml", "identify", task.FileName}
+	args := []string{"identify", "-F", task.FileName}
+	log.Printf("%s %s\n", COMMAND, args)
 	// Befehl ausführen
 	cmd := exec.CommandContext(ctx, COMMAND, args...)
 	var stdout, stderr bytes.Buffer
@@ -55,17 +56,15 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 	cmd.Stderr = &stderr
 
 	err := cmd.Run()
-	output := stdout.String()
-	stderrOutput := stderr.String()
+	task.Output = stdout.String()
+	task.Error = stderr.String()
 
 	t = time.Now()
 	task.CompletedAt = &t
 	if err != nil {
 		task.Status = models.StatusFailed
-		task.Error = stderrOutput
 	} else {
 		task.Status = models.StatusCompleted
-		task.Output = output
 	}
 	// Task aktualisieren
 	if err := w.repo.Update(ctx, task); err != nil {
