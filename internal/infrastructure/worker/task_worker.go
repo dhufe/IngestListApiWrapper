@@ -10,6 +10,7 @@ import (
 
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/interfaces"
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
+	"github.com/dhufe/IngestListApiWrapper/pkg/utils"
 )
 
 type TaskWorker struct {
@@ -56,7 +57,9 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 	cmd.Stderr = &stderr
 
 	err := cmd.Run()
-	task.Output = stdout.String()
+	convert := utils.NewXMLConverter(true, true)
+	converted, err := convert.ToJSONFromBuffer(&stdout)
+	task.Output = string(converted)
 	task.Error = stderr.String()
 
 	t = time.Now()
