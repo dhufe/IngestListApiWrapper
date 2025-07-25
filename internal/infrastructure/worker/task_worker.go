@@ -20,7 +20,7 @@ type TaskWorker struct {
 }
 
 const (
-	COMMAND = "third/bin/ingestlist"
+	command = "third/bin/ingestlist"
 )
 
 func NewTaskWorker(
@@ -58,10 +58,8 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 		args = []string{"-c", "third/cfg/sampleconfig.xml", "validate", "-F", task.FileName}
 		break
 	}
-
-	log.Printf("%s %s\n", COMMAND, args)
 	// Befehl ausführen
-	cmd := exec.CommandContext(ctx, COMMAND, args...)
+	cmd := exec.CommandContext(ctx, command, args...)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
