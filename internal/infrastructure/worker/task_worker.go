@@ -48,7 +48,17 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 		return
 	}
 
-	args := []string{"identify", "-F", task.FileName}
+	var args []string
+	switch task.Type {
+	default:
+	case models.TypeIdentify:
+		args = []string{"-c", "third/cfg/sampleconfig.xml", "identify", "-F", task.FileName}
+		break
+	case models.TypeValidate:
+		args = []string{"-c", "third/cfg/sampleconfig.xml", "validate", "-F", task.FileName}
+		break
+	}
+
 	log.Printf("%s %s\n", COMMAND, args)
 	// Befehl ausführen
 	cmd := exec.CommandContext(ctx, COMMAND, args...)

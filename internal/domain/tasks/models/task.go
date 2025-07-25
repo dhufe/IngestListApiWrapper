@@ -16,9 +16,9 @@ const (
 	StatusCompleted   TaskStatus = "Completed"
 	StatusFailed      TaskStatus = "Failed"
 
-	TypeBagit    TaskType = "bagit"
-	TypeIdentify TaskType = "indentify"
-	TypeValidate TaskType = "validate"
+	TypeBagit    TaskType = "Bagit"
+	TypeIdentify TaskType = "Identify"
+	TypeValidate TaskType = "Validate"
 )
 
 type Task struct {
