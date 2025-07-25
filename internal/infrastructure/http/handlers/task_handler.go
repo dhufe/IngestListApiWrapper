@@ -6,10 +6,11 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+
+	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
+	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
 )
 
 type TaskHandler struct {
@@ -52,7 +53,7 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 
 	task, err := h.service.CreateTask(
 		c.Request.Context(),
-		fileName,
+		fileStorePath,
 	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
