@@ -19,10 +19,15 @@ func NewTaskService(repo interfaces.TaskRepository, fileStoragePath string) *Tas
 	}
 }
 
-func (s *TaskService) CreateTask(ctx context.Context, filename string) (*models.Task, error) {
+func (s *TaskService) CreateTask(
+	ctx context.Context,
+	filename string,
+	tasktype models.TaskType,
+) (*models.Task, error) {
 	task := &models.Task{
 		FileName: filename,
 		Status:   models.StatusPending,
+		Type:     tasktype,
 	}
 
 	err := s.repo.Create(ctx, task)

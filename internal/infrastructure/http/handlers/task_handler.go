@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"mime/multipart"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -20,6 +21,8 @@ type TaskHandler struct {
 const (
 	VERSION         = "0.4"
 	DefaultResponse = "IngestList-Wrapper version %s is running"
+	FileUploadType  = "multipart/form-data"
+	FileApiType     = "application/json"
 )
 
 func NewTaskHandler(service *services.TaskService) *TaskHandler {
@@ -29,38 +32,64 @@ func NewTaskHandler(service *services.TaskService) *TaskHandler {
 }
 
 func (h *TaskHandler) CreateTask(c *gin.Context) {
-	// Dateiupload
-	file, err := c.FormFile("file")
-	/*
-		var request struct {
-			FileName string `json:"filename" binding:"required"`
+	var request struct {
+		FileName string `json:"filename" binding:"required"`
+		Type     string `json:"type" binding:"required"`
+	}
+
+	switch c.ContentType() {
+	case FileUploadType:
+		file, err := c.FormFile("file")
+
+		var tmp struct {
+			Type     string                `form:"type" binding:"required"`
+			fileName *multipart.FileHeader `form:"file binding:"required"`
 		}
+
+		if err = c.Bind(&tmp); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		fileName := uuid.New().String() + "_" + file.Filename
+		request.FileName = filepath.Join(h.service.FileStoragePath(), fileName)
+		request.Type = tmp.Type
+
+		err = c.SaveUploadedFile(file, request.FileName)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "unable to save file"})
+			return
+		}
+		break
+	case FileApiType:
 
 		if err := c.ShouldBindJSON(&request); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-	*/
 
-	fileName := uuid.New().String() + "_" + file.Filename
-	fileStorePath := filepath.Join(h.service.FileStoragePath(), fileName)
+		// TODO: Check einbauen of Pfad existiert
 
-	err = c.SaveUploadedFile(file, fileStorePath)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "unable to save file"})
-		return
+		break
+	default:
+		request.FileName = ""
 	}
 
-	task, err := h.service.CreateTask(
-		c.Request.Context(),
-		fileStorePath,
-	)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	if request.FileName != "" {
 
-	c.JSON(http.StatusCreated, task)
+		task, err := h.service.CreateTask(
+			c.Request.Context(),
+			request.FileName,
+			models.TaskType(request.Type),
+		)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusCreated, task)
+
+	}
 }
 
 func (h *TaskHandler) GetTask(c *gin.Context) {
