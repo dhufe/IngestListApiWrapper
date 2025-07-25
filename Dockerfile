@@ -4,7 +4,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . ./
-RUN CGO_ENABLED=0 GOOS=linux go build ./cmd/server -o apiwrapper 
+RUN CGO_ENABLED=0 GOOS=linux go build -o apiwrapper ./cmd/server/
 
 FROM alpine:3.21 AS prod
 RUN apk update --no-cache -U \
