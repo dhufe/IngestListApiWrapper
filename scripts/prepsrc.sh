@@ -9,7 +9,7 @@ fi
 if [ ! -d ${CI_PROJECT_DIR}/buildtools ]; then
   mkdir ${CI_PROJECT_DIR}/buildtools
   pushd ${CI_PROJECT_DIR}/buildtools
-  git -c http.sslVerify=false clone https://${DMUser}:${GITLAB_TOKEN}@gitlab.la-bw.de/dimag/querschnitt/dimagutils.git dimagutils
+  git -c http.sslVerify=false clone https://${GITLAB_USER_LOGIN}:${GITLAB_TOKEN}@gitlab.la-bw.de/dimag/querschnitt/dimagutils.git dimagutils
   mv dimagutils/python-release-download download-release
   rm -rf dimagutils
   cd download-release
