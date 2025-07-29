@@ -6,7 +6,8 @@ import { Navbar } from './components/navbar/navbar';
   selector: 'app-root',
   imports: [RouterOutlet, Navbar],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
+
 })
 export class App {
   protected title = 'frontend';
