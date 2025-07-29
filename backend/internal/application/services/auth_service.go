@@ -37,17 +37,28 @@ func NewAuthService(
 	}
 }
 
-func (s *AuthService) Authenticate(ctx context.Context, creds models.UserCredentials) (string, error) {
+func (s *AuthService) Authenticate(ctx context.Context, creds models.UserCredentials) (*models.User, error) {
 	user, err := s.userRepo.FindByEmail(ctx, creds.Email)
 	if err != nil {
-		return "", ErrUserNotFound
+		return nil, ErrUserNotFound
 	}
 
 	if err := s.VerifyPassword(user.Password, creds.Password); err != nil {
-		return "", ErrInvalidCredentials
+		return nil, ErrInvalidCredentials
 	}
 
-	return s.generateToken(user.ID)
+	var token string
+	if token, err = s.generateToken(user.ID); err != nil {
+		return nil, ErrInvalidToken
+	}
+
+	user.Token = token
+	err = s.userRepo.Update(ctx, user)
+	if err != nil {
+		return nil, ErrInvalidToken
+	}
+
+	return user, nil
 }
 
 func (s *AuthService) generateToken(userID uint) (string, error) {

@@ -1,11 +1,11 @@
 package http
 
 import (
-	"github.com/gin-gonic/gin"
-
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/http/handlers"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/http/middleware"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func NewRouter(
@@ -13,6 +13,15 @@ func NewRouter(
 	taskService *services.TaskService,
 ) *gin.Engine {
 	router := gin.Default()
+
+	router.ForwardedByClientIP = true
+	router.SetTrustedProxies([]string{"*"})
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"*"}
+	corsConfig.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
+	corsConfig.AllowMethods = []string{"GET", "POST"}
+	// It's important that the cors configuration is used before declaring the routes.
+	router.Use(cors.New(corsConfig))
 
 	// middleware
 	authMiddleware := middleware.NewAuthMiddleware(authService)
