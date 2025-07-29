@@ -15,11 +15,7 @@ prepare-env-job:
   script:
     # install tools we need to build our toolchain
     - apk add --no-cache git bash python3 py3-pip curl grep
-    - chmod +x prepare_sources.sh
+    - chmod +x scripts/prepsrc.sh
     # run build script for download tool
-    - bash prepare_sources.sh
-        # get Tomcat's version by scraping the website
-    - cat ${CI_PROJECT_DIR}/sources/TMVERSION
-
-
+    - bash scripts/prepsrc.sh
 
