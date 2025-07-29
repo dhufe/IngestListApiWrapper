@@ -34,3 +34,7 @@ profile.cov
 */tasks.db
 */data/**
 */third/**
+
+tasks.db 
+data
+config
