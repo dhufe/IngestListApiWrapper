@@ -1,0 +1,25 @@
+stages:
+  - prep
+  - test
+  - build
+  - clean
+
+variables:
+  REGISTRY: '$CI_REGISTRY/daniel/IngestListApiWrapper'
+
+
+prepare-env-job:
+  stage: prep
+  image: alpine:3.22
+
+  script:
+    # install tools we need to build our toolchain
+    - apk add --no-cache git bash python3 py3-pip curl grep
+    - chmod +x prepare_sources.sh
+    # run build script for download tool
+    - bash prepare_sources.sh
+        # get Tomcat's version by scraping the website
+    - cat ${CI_PROJECT_DIR}/sources/TMVERSION
+
+
+
