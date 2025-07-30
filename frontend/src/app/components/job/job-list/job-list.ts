@@ -1,5 +1,4 @@
 import {Component, OnInit, signal, ViewEncapsulation, ViewChild} from '@angular/core';
-import {ComponentUtils} from '../../component.utils';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -11,6 +10,8 @@ import {JobService} from '../../../services/job';
 import {MatSort, MatSortModule, Sort} from '@angular/material/sort';
 import {Job} from '../../../model/job';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import {JobComponent} from '../job';
+import {RouterModule} from '@angular/router';
 
 
 @Component({
@@ -20,17 +21,17 @@ import {MatTableDataSource, MatTableModule} from '@angular/material/table';
   encapsulation: ViewEncapsulation.None,
   imports: [MatCardModule, FormsModule, MatInputModule,
     MatFormFieldModule, MatButtonModule, MatIconModule, MatTableModule,
-    MatPaginatorModule, MatPaginator, MatSort, MatSortModule
+    MatPaginatorModule, MatPaginator, MatSort, MatSortModule, RouterModule
   ],
   providers: [
     JobService
   ],
 })
-export class JobListComponent extends ComponentUtils implements OnInit {
+export class JobListComponent extends JobComponent implements OnInit {
 
   dataSource: MatTableDataSource<Job>;
   jobs: Job[] = [];
-  displayedColumns: string[] = ['Id', 'FileName', 'Type', 'Status'];
+  displayedColumns: string[] = ['Id', 'FileName', 'Type', 'Status', 'Aktion'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -79,14 +80,18 @@ export class JobListComponent extends ComponentUtils implements OnInit {
     }
   }
 
-  openDeleteDialog(): void {
+  openEditJob(job: Job) {
+
+  }
+
+  openDetails(job: Job): void {
     // Erst Dialog erstellen
-    /*
-    const dialogData = new DeleteDialogData('Host', 'den Host ' + deleteHost.hostname);
+/*
+    const dialogData = new DeleteDialogData('Job', 'den Job ' + deleteHost.hostname);
     const dialogRef = this.dialog.open(DeleteDialogComponent, {
       data: dialogData
     });
-    */
+*/
     // Dann via Service Aktion ausführen
     /*
     dialogRef.afterClosed().subscribe(result => {
@@ -110,7 +115,6 @@ export class JobListComponent extends ComponentUtils implements OnInit {
     if (user) {
       this.jobService.getJobs(user)
         .subscribe(jobs => this.dataSource.data = jobs)
-      console.log(this.jobs)
     }
   }
 }

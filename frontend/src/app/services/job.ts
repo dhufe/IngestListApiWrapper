@@ -26,6 +26,9 @@ export class JobService {
       })
     }
     return this.http.get<Job>(environment.apiBaseUrl + "job/" + id, httpOptions)
+      .pipe(
+        catchError(this.handleError<Job>('getJob'))
+      );
   }
 
   public getJobs(user: User): Observable<Job[]> {
@@ -37,12 +40,25 @@ export class JobService {
       })
     }
     return this.http.get<Job[]>(environment.apiBaseUrl + "jobs", httpOptions)
-      /*
       .pipe(
         catchError(this.handleError<Job[]>('getJobs', []))
       );
+  }
 
-       */
+  public createJob(user: User, job: Job): Observable<Job> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + user.token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      })
+    }
+
+    const payload = JSON.stringify(job)
+        return this.http.post<Job>(environment.apiBaseUrl + "create", payload, httpOptions)
+      .pipe(
+        catchError(this.handleError<Job>('getJob'))
+      );
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
