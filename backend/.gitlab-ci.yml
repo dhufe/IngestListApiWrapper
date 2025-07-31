@@ -16,7 +16,7 @@ lint:
     # Write the code coverage report to gl-code-quality-report.json
     # and print linting issues to stdout in the format: path/to/file:line description
     - >
-      golangci-lint run backend --out-format code-climate $LINT_GO_CLI_ARGS |
+      golangci-lint run backend backend/... --out-format code-climate $LINT_GO_CLI_ARGS |
       tee gl-code-quality-report.json |
       jq -r '.[] | "\(.location.path):\(.location.lines.begin) \(.description)"'
   artifacts:
