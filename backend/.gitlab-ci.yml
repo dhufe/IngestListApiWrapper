@@ -1,6 +1,6 @@
 lint:
   stage: lint
-  image: golangci/golangci-lint:v1.55.2-alpine
+  image: golangci/golangci-lint:v2.3.0-alpine
   tags: [docker]
   variables:
     CONFIG_FILE_LINK: https://gitlab.com/gitlab-ci-utils/config-files/-/raw/10.1.1/Linters/.golangci.yml
