@@ -3,6 +3,9 @@ lint:
     GOLANGCI_LINT_VERSION: '2.1.6'
   image: ${GITLAB_DEPENDENCY_PROXY}golangci/golangci-lint:v$GOLANGCI_LINT_VERSION
   tags: [ docker ]
+  rules:
+    - exists:
+        - '**/*.go'
   stage: lint
   script:
     # Write the code coverage report to gl-code-quality-report.json
