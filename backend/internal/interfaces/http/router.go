@@ -1,11 +1,14 @@
 package http
 
 import (
+	"log"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/http/handlers"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/http/middleware"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 )
 
 func NewRouter(
@@ -15,7 +18,9 @@ func NewRouter(
 	router := gin.Default()
 
 	router.ForwardedByClientIP = true
-	router.SetTrustedProxies([]string{"*"})
+	if err := router.SetTrustedProxies([]string{"*"}); err != nil {
+		log.Printf("Can not set trusted proxies.\n")
+	}
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowOrigins = []string{"*"}
 	corsConfig.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
