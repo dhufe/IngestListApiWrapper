@@ -1,24 +1,13 @@
 lint:
-  stage: lint
-  image: golangci/golangci-lint:v2.3.0-alpine
-  tags: [docker]
   variables:
-    CONFIG_FILE_LINK: https://gitlab.com/gitlab-ci-utils/config-files/-/raw/10.1.1/Linters/.golangci.yml
-  rules:
-    - exists:
-        - '**/*.go'
-  before_script:
-    - apk add jq
-    #- ls -al
-    # Use default .golangci.yml file if one does not exist
-    - if [ ! -f .golangci.yml ]; then (wget $CONFIG_FILE_LINK) fi
+    GOLANGCI_LINT_VERSION: '2.1.6'
+  image: ${GITLAB_DEPENDENCY_PROXY}golangci/golangci-lint:v$GOLANGCI_LINT_VERSION
+  stage: lint
   script:
     # Write the code coverage report to gl-code-quality-report.json
     # and print linting issues to stdout in the format: path/to/file:line description
-    - >
-      golangci-lint run backend backend/... --out-format code-climate $LINT_GO_CLI_ARGS |
-      tee gl-code-quality-report.json |
-      jq -r '.[] | "\(.location.path):\(.location.lines.begin) \(.description)"'
+    # add `--issues-exit-code 0` to ignore linting issues
+    - golangci-lint run --output.text.path=stdout --output.text.colors=false --output.text.print-issued-lines=false --output.code-climate.path=gl-code-quality-report.json
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
