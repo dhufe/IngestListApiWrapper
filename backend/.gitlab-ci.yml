@@ -8,6 +8,7 @@ lint:
     # Write the code coverage report to gl-code-quality-report.json
     # and print linting issues to stdout in the format: path/to/file:line description
     # add `--issues-exit-code 0` to ignore linting issues
+    - cd backend
     - golangci-lint run --output.text.path=stdout --output.text.colors=false --output.text.print-issued-lines=false --output.code-climate.path=gl-code-quality-report.json
   artifacts:
     reports:
