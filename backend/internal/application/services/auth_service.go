@@ -14,10 +14,10 @@ import (
 )
 
 var (
-	ErrInvalidCredentials = errors.New("Invalid credentials")
-	ErrUserNotFound       = errors.New("User not found")
-	ErrInvalidToken       = errors.New("Invalid token")
-	ErrExpiredToken       = errors.New("Token expired")
+	ErrInvalidCredentials = errors.New("invalid credentials")
+	ErrUserNotFound       = errors.New("user not found")
+	ErrInvalidToken       = errors.New("invalid token")
+	ErrExpiredToken       = errors.New("token expired")
 )
 
 type AuthService struct {
