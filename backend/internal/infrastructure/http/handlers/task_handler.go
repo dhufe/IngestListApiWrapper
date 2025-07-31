@@ -43,7 +43,7 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 
 		var tmp struct {
 			Type     string                `form:"type" binding:"required"`
-			fileName *multipart.FileHeader `form:"file binding:"required"`
+			fileName *multipart.FileHeader `form:"file" binding:"required"`
 		}
 
 		if err = c.Bind(&tmp); err != nil {
@@ -60,7 +60,7 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "unable to save file"})
 			return
 		}
-		break
+
 	case FileApiType:
 
 		if err := c.ShouldBindJSON(&request); err != nil {
@@ -70,7 +70,6 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 
 		// TODO: Check einbauen of Pfad existiert
 
-		break
 	default:
 		request.FileName = ""
 	}
