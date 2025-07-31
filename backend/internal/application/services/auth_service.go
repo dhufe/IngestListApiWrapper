@@ -6,17 +6,18 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/user/interfaces"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/user/models"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+
+	"github.com/dhufe/IngestListApiWrapper/internal/domain/user/interfaces"
+	"github.com/dhufe/IngestListApiWrapper/internal/domain/user/models"
 )
 
 var (
-	ErrInvalidCredentials = errors.New("Invalid credentials.")
-	ErrUserNotFound       = errors.New("User not found.")
-	ErrInvalidToken       = errors.New("Invalid token.")
-	ErrExpiredToken       = errors.New("Token expired.")
+	ErrInvalidCredentials = errors.New("Invalid credentials")
+	ErrUserNotFound       = errors.New("User not found")
+	ErrInvalidToken       = errors.New("Invalid token")
+	ErrExpiredToken       = errors.New("Token expired")
 )
 
 type AuthService struct {
@@ -37,7 +38,10 @@ func NewAuthService(
 	}
 }
 
-func (s *AuthService) Authenticate(ctx context.Context, creds models.UserCredentials) (*models.User, error) {
+func (s *AuthService) Authenticate(
+	ctx context.Context,
+	creds models.UserCredentials,
+) (*models.User, error) {
 	user, err := s.userRepo.FindByEmail(ctx, creds.Email)
 	if err != nil {
 		return nil, ErrUserNotFound
