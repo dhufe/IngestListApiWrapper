@@ -8,8 +8,8 @@ lint:
     - exists:
         - '**/*.go'
   before_script:
-    # - apk add jq
-    - ls -al
+    - apk add jq
+    #- ls -al
     # Use default .golangci.yml file if one does not exist
     - if [ ! -f .golangci.yml ]; then (wget $CONFIG_FILE_LINK) fi
   script:
