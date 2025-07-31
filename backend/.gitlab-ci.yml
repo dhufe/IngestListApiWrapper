@@ -15,7 +15,7 @@ lint:
     - golangci-lint run --output.text.path=stdout --output.text.colors=false --output.text.print-issued-lines=false --output.code-climate.path=gl-code-quality-report.json
   artifacts:
     reports:
-      codequality: gl-code-quality-report.json
+      codequality: backend/gl-code-quality-report.json
     paths:
       - backend/gl-code-quality-report.json
   allow_failure: true
