@@ -1,0 +1,27 @@
+lint:
+  stage: lint
+  image: golangci/golangci-lint:v1.55.2-alpine
+  variables:
+    CONFIG_FILE_LINK: https://gitlab.com/gitlab-ci-utils/config-files/-/raw/10.1.1/Linters/.golangci.yml
+  rules:
+    - exists:
+        - '**/*.go'
+  before_script:
+    - apk add jq
+    # Use default .golangci.yml file if one does not exist
+    - if [ ! -f .golangci.yml ]; then (wget $CONFIG_FILE_LINK) fi
+  script:
+    # Write the code coverage report to gl-code-quality-report.json
+    # and print linting issues to stdout in the format: path/to/file:line description
+    - >
+      golangci-lint run --out-format code-climate $LINT_GO_CLI_ARGS |
+      tee gl-code-quality-report.json |
+      jq -r '.[] | "\(.location.path):\(.location.lines.begin) \(.description)"'
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+    paths:
+      - gl-code-quality-report.json
+  allow_failure: true
+
+
