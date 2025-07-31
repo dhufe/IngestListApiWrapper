@@ -63,6 +63,9 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 	cmd.Stderr = &stderr
 
 	err := cmd.Run()
+	if err != nil {
+		log.Printf("Error running command : %s", command)
+	}
 	convert := utils.NewXMLConverter(true, true)
 	var converted []byte
 	if converted, err = convert.ToJSONFromBuffer(&stdout); err != nil {
