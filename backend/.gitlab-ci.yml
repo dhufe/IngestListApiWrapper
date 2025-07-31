@@ -14,7 +14,7 @@ lint:
     reports:
       codequality: gl-code-quality-report.json
     paths:
-      - gl-code-quality-report.json
+      - backend/gl-code-quality-report.json
   allow_failure: true
 
 
