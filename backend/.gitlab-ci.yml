@@ -8,7 +8,7 @@ lint:
     - exists:
         - '**/*.go'
   before_script:
-    - apk add jq
+    # - apk add jq
     - ls -al
     # Use default .golangci.yml file if one does not exist
     - if [ ! -f .golangci.yml ]; then (wget $CONFIG_FILE_LINK) fi
@@ -16,7 +16,7 @@ lint:
     # Write the code coverage report to gl-code-quality-report.json
     # and print linting issues to stdout in the format: path/to/file:line description
     - >
-      golangci-lint run ./cmd/server/... --out-format code-climate $LINT_GO_CLI_ARGS |
+      golangci-lint run ./backend/cmd/server/... --out-format code-climate $LINT_GO_CLI_ARGS |
       tee gl-code-quality-report.json |
       jq -r '.[] | "\(.location.path):\(.location.lines.begin) \(.description)"'
   artifacts:
