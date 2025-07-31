@@ -53,10 +53,8 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 	default:
 	case models.TypeIdentify:
 		args = []string{"-c", "third/cfg/sampleconfig.xml", "identify", "-F", task.FileName}
-		break
 	case models.TypeValidate:
 		args = []string{"-c", "third/cfg/sampleconfig.xml", "validate", "-F", task.FileName}
-		break
 	}
 	// Befehl ausführen
 	cmd := exec.CommandContext(ctx, command, args...)
@@ -66,7 +64,10 @@ func (w *TaskWorker) ProcessTask(ctx context.Context, task *models.Task) {
 
 	err := cmd.Run()
 	convert := utils.NewXMLConverter(true, true)
-	converted, err := convert.ToJSONFromBuffer(&stdout)
+	var converted []byte
+	if converted, err = convert.ToJSONFromBuffer(&stdout); err != nil {
+		log.Printf("Error converting to JSON %v.", err)
+	}
 	task.Output = string(converted)
 	task.Error = stderr.String()
 
