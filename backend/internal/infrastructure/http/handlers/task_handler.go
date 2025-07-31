@@ -40,6 +40,10 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 	switch c.ContentType() {
 	case FileUploadType:
 		file, err := c.FormFile("file")
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
 		var tmp struct {
 			Type     string                `form:"type" binding:"required"`
