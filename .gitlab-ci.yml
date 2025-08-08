@@ -20,7 +20,7 @@ workflow:
         CI_REGISTRY_PASSWORD: $PODMAN_PASS
     - if: $CI_SERVER_HOST != "gitlab.la-bw.de"
       variables:
-        REGISTRY:             '$CI_REGISTRY/daniel/container-dimag'
+        REGISTRY:             '$CI_REGISTRY/dimag/ingestlistapiwrapper'
 
 cache:
   paths:
