@@ -11,7 +11,8 @@ RUN apk update --no-cache -U \
   && apk add --no-cache curl tzdata
 WORKDIR /app 
 COPY --from=build /app/apiwrapper ./apiwrapper
-COPY ./config/config.yaml /app
+COPY ./third /app/
+# COPY ./config/config.yaml /app
 CMD ["./apiwrapper"]
 
 EXPOSE 8080
