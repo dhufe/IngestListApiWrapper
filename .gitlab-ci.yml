@@ -4,6 +4,28 @@ include:
 stages:
   - lint
   - prep
+  - build
+
+variables:
+  INGESTLIST_RELEASE: '7.2.0'
+  REGISTRY:           'default-route-openshift-image-registry.apps.kubecluster.blha.mwfk.ad.lvnbb.de'
+
+
+workflow:
+  rules:
+    - if: $CI_SERVER_HOST == "gitlab.la-bw.de"
+      variables:
+        REGISTRY:             'default-route-openshift-image-registry.apps.kubecluster.blha.mwfk.ad.lvnbb.de/dimag'
+        CI_REGISTRY_USER:     $PODMAN_USER
+        CI_REGISTRY_PASSWORD: $PODMAN_PASS
+    - if: $CI_SERVER_HOST != "gitlab.la-bw.de"
+      variables:
+        REGISTRY:             '$CI_REGISTRY/daniel/container-dimag'
+
+cache:
+  paths:
+    - ${CI_PROJECT_DIR}/sources/
+
 
 prepare:
   image: alpine:3.22
@@ -16,4 +38,14 @@ prepare:
     # run build script for download tool
     - bash ./scripts/prepsrc.sh
  
-  
+  build-backend:
+    stage: build
+    image: quay.io/podman/stable
+    tags: [ docker]
+    dependencies:
+      - prepare
+    before-script:
+      - cat conf/registry.conf >> /etc/containers/registries.conf
+      - podman login --tls-verify=false -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $REGISTRY
+    script:
+    
