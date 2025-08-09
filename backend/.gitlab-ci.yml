@@ -20,9 +20,9 @@ lint:
       - backend/gl-code-quality-report.json
   allow_failure: true
 
-prepare:
+prepare_backend:
   image: alpine:3.22
-  stage: prep
+  stage: build
   tags: [ docker]
   script:
     # install tools we need to build our toolchain
@@ -36,7 +36,7 @@ build_backend:
   image: quay.io/podman/stable
   tags: [ docker]
   dependencies:
-    - prepare
+    - prepare_backend
   before_script:
     - cat conf/registry.conf >> /etc/containers/registries.conf
     - podman login --tls-verify=false -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $REGISTRY
