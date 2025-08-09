@@ -12,7 +12,7 @@ RUN npm run build --prod
 
 # Stage 2: Serve the app with Node.js and Express
 
-FROM nginx:alpine AS prod
+FROM docker.io/nginx:alpine AS prod
 
 RUN apk update --no-cache -U
 COPY --from=build /app/dist/frontend /usr/share/nginx/html
