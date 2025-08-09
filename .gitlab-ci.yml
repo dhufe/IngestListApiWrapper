@@ -1,6 +1,3 @@
-include:
-  - backend/.gitlab-ci.yml
-
 stages:
   - lint
   - prep
@@ -27,27 +24,7 @@ cache:
     - ${CI_PROJECT_DIR}/sources/
 
 
-prepare:
-  image: alpine:3.22
-  stage: prep
-  tags: [ docker]
-  script:
-    # install tools we need to build our toolchain
-    - apk add --no-cache git bash python3 py3-pip curl grep
-    - chmod +x ./scripts/prepsrc.sh
-    # run build script for download tool
-    - bash ./scripts/prepsrc.sh
- 
-build_backend:
-  stage: build
-  image: quay.io/podman/stable
-  tags: [ docker]
-  dependencies:
-    - prepare
-  before_script:
-    - cat conf/registry.conf >> /etc/containers/registries.conf
-    - podman login --tls-verify=false -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $REGISTRY
-  script:
-    - cp -R sources/ingestlist-${INGESTLIST_RELEASE}/ingestlist/ backend/third
-    - podman build -t $REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE} backend/
-    - podman push $REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE}
+include:
+  - backend/.gitlab-ci.yml
+  - frontend/.gitlab-ci.yml
+
