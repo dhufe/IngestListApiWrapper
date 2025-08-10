@@ -69,10 +69,12 @@ func LoadConfig(path string) (*Config, error) {
 	configPath := getConfigPath(path)
 	data, err := os.ReadFile(configPath)
 	if err != nil {
-		if os.IsNotExist(err) {
-			// Datei existiert nicht, erstelle sie mit Standardwerten
-			return defaultConfig, saveConfig(configPath, defaultConfig)
-		}
+		/*
+			if os.IsNotExist(err) {
+				// Datei existiert nicht, erstelle sie mit Standardwerten
+				return defaultConfig, saveConfig(configPath, defaultConfig)
+			}
+		*/
 		return nil, err
 	}
 
