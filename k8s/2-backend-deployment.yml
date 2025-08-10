@@ -1,0 +1,52 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ilwrapper-backend
+  namespace: ilwrapper
+  labels:
+    app: ilwrapper-backend
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+        app: ilwrapper-backend
+  template:
+    metadata:
+      labels:
+        app: ilwrapper-backend
+      annotations: 
+        author: Daniel Hufschläger <daniel.hufschlager@blha.brandneburg.de>
+    spec:
+      volumes:
+        - name: ilwrapper-cfg
+          configMap:
+            name: ilwrapper-config
+      containers:
+        - name: ilwrapperbackend
+          image: registry.hufschlaeger.net/dimag/ingestlistapiwrapper/ingestlistwrapper_backend:7.2.0 
+          imagePullPolicy: Always
+          env:
+            - name: "TZ"
+              value: "Europe/Berlin"
+          volumeMounts:
+            - name: ilwrapper-cfg
+              mountPath: /app/config/config.yaml
+              subPath: config.yaml
+          ports:
+            - name: backendport
+              containerPort: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: ilwrapper
+  name: ilwrapper-backend-svc
+spec:
+  selector:
+    app: ilwrapper-backend
+  ports:
+    - name: backendport
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+
