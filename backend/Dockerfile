@@ -1,6 +1,6 @@
 FROM docker.io/golang:1.24.6-alpine3.22 AS build
 RUN apk update --no-cache -U \
-  && apk -add --no-cache gcc
+  && apk add --no-cache gcc
 WORKDIR /app 
 COPY go.mod go.sum ./
 RUN go mod download
