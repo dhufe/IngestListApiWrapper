@@ -1,4 +1,4 @@
-build_frontend:
+frontend-build:
   stage: build
   image: quay.io/podman/stable
   tags: [ docker]
