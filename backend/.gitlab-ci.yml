@@ -30,7 +30,10 @@ prepare-backend:
     - chmod +x ./scripts/prepsrc.sh
     # run build script for download tool
     - bash ./scripts/prepsrc.sh
- 
+  rules:
+    - changes:
+        - backend/**/*
+
 build-backend:
   stage: build
   image: quay.io/podman/stable
@@ -44,3 +47,6 @@ build-backend:
     - cp -R sources/ingestlist-${INGESTLIST_RELEASE}/ingestlist/ backend/third
     - podman build -t $REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE} backend/
     - podman push $REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE}
+  rules:
+    - changes:
+        - backend/**/*
