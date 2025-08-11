@@ -22,7 +22,7 @@ backend-lint:
       - backend/gl-code-quality-report.json
   allow_failure: true
 
-backend:-prepare
+backend-prepare:
   image: alpine:3.22
   stage: build
   tags: [ docker]
