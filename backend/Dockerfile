@@ -9,7 +9,7 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o apiwrapper ./cmd/server/
 
 FROM alpine:3.21 AS prod
 RUN apk update --no-cache -U \
-  && apk add --no-cache curl tzdata openjdk21-jre
+  && apk add --no-cache curl tzdata openjdk21-jre bash
 WORKDIR /app 
 COPY --from=build /app/apiwrapper ./apiwrapper
 COPY ./third /app/third
