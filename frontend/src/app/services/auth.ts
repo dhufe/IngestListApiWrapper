@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {map} from 'rxjs/operators';
-import {Observable} from 'rxjs';
 import {User} from '../model/user';
 import {ApplicationConstants} from '../application-constants';
 import {environment} from '../../environments/environment';
