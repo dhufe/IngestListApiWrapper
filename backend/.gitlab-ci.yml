@@ -1,9 +1,11 @@
-lint:
+backend-lint:
   variables:
     GOLANGCI_LINT_VERSION: '2.1.6'
   image: ${GITLAB_DEPENDENCY_PROXY}golangci/golangci-lint:v$GOLANGCI_LINT_VERSION
   tags: [ docker ]
   rules:
+    - changes:
+        - backend/**/*
     - exists:
         - '**/*.go'
   stage: lint
@@ -20,7 +22,7 @@ lint:
       - backend/gl-code-quality-report.json
   allow_failure: true
 
-prepare-backend:
+backend:-prepare
   image: alpine:3.22
   stage: build
   tags: [ docker]
@@ -34,7 +36,7 @@ prepare-backend:
     - changes:
         - backend/**/*
 
-build-backend:
+backend-build:
   stage: build
   image: quay.io/podman/stable
   tags: [ docker]
