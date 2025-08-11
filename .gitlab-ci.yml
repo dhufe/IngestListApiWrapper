@@ -41,9 +41,5 @@ docker-lint:
 
 include:
   - backend/.gitlab-ci.yml
-    rules:
-    - changes:
-        - backend/**/*
-
   - frontend/.gitlab-ci.yml
 
