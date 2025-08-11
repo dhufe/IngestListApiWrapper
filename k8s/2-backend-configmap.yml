@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+  name: ilwrapper-config
+  namespace: ilwrapper
+data:
+  config.yaml: |
+    server:
+      port: "8080"
+      host: "0.0.0.0"
+    database:
+      driver: postgres
+      dsn: 'host=ilwrapper-postgres-svc.ilwrapper.svc.cluster.local user=dbuser password=password dbname=postgres port=5432 sslmode=disable TimeZone=Europe/Berlin'
+      max_open: 10
+      max_idle: 5
+    task_scheduler:
+      interval: '*/30 * * * * *'
+      file_storage_path: data
+      max_workers: 3
+    security:
+      secret_key: your-secret-key
