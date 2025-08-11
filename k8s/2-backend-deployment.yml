@@ -28,6 +28,8 @@ spec:
 #          command: ["/bin/sh"]
 #          args: ["-c", "while true; do echo hello; sleep 10;done"] 
           env:
+            - name: "GIN_MODE"
+              value: "release"
             - name: "TZ"
               value: "Europe/Berlin"
           volumeMounts:

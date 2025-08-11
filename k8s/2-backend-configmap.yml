@@ -10,8 +10,8 @@ data:
       port: "8080"
       host: localhost
     database:
-      driver: sqlite
-      dsn: tasks.db
+      driver: postgres
+      dsn: 'host=ilwrapper-postgres-svc.ilwrapper.svc.cluster.local user=dbuser password=password dbname=postgres port=5432 sslmode=disable TimeZone=Europe/Berlin'
       max_open: 10
       max_idle: 5
     task_scheduler:
