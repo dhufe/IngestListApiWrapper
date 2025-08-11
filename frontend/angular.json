@@ -60,8 +60,7 @@
               "extractLicenses": false,
               "sourceMap": true
             }
-          },
-          "defaultConfiguration": "development"
+          }
         },
         "serve": {
           "builder": "@angular/build:dev-server",
