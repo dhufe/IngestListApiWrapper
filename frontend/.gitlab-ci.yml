@@ -8,3 +8,6 @@ build_frontend:
   script:
     - podman build -t $REGISTRY/ingestlistwrapper_frontend frontend/
     - podman push $REGISTRY/ingestlistwrapper_frontend
+  rules:
+    - changes:
+        - frontend/**/*
