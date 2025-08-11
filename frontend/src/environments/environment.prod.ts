@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://ilwrapper-backend-svc.ilwrapper.svc.cluster.local:8080/api/'
+  apiBaseUrl: 'http://192.168.0.25:8080/api/'
 };
