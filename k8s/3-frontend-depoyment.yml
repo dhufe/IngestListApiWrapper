@@ -1,0 +1,50 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ilwrapper-frontend
+  namespace: ilwrapper
+  labels:
+    app: ilwrapper-frontend
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+        app: ilwrapper-frontend
+  template:
+    metadata:
+      labels:
+        app: ilwrapper-frontend
+      annotations: 
+        author: Daniel Hufschläger <daniel.hufschlager@blha.brandneburg.de>
+    spec:
+      volumes:
+      containers:
+        - name: ilwrapperfrontend
+          image: registry.hufschlaeger.net/dimag/ingestlistapiwrapper/ingestlistwrapper_frontend:latest
+          imagePullPolicy: Always
+#          command: ["/bin/sh"]
+#          args: ["-c", "while true; do echo hello; sleep 10;done"] 
+          env:
+            - name: "TZ"
+              value: "Europe/Berlin"
+          ports:
+            - name: frontendport
+              containerPort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: ilwrapper
+  name: ilwrapper-frontend-svc
+spec:
+  selector:
+    app: ilwrapper-frontend
+  ports:
+    - name: frontendport
+      port: 8081
+      protocol: TCP
+      targetPort: 80
+      nodePort: 30273
+  type: LoadBalancer
+
+
