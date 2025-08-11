@@ -12,7 +12,7 @@ RUN apk update --no-cache -U \
   && apk add --no-cache curl tzdata
 WORKDIR /app 
 COPY --from=build /app/apiwrapper ./apiwrapper
-COPY ./third /app/
+COPY ./third /app/third
 # COPY ./config/config.yaml /app
 CMD ["./apiwrapper"]
 
