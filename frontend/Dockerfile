@@ -2,7 +2,8 @@ FROM node:alpine as build
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm ci \
+ && npm i -g @angular/cli
 COPY . .
 RUN ng build --configuration production
 
