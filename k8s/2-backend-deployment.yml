@@ -25,6 +25,8 @@ spec:
         - name: ilwrapperbackend
           image: registry.hufschlaeger.net/dimag/ingestlistapiwrapper/ingestlistwrapper_backend:7.2.0 
           imagePullPolicy: Always
+#          command: ["/bin/sh"]
+#          args: ["-c", "while true; do echo hello; sleep 10;done"] 
           env:
             - name: "TZ"
               value: "Europe/Berlin"

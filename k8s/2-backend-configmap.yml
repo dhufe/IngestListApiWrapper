@@ -5,7 +5,7 @@ metadata:
   name: ilwrapper-config
   namespace: ilwrapper
 data:
-  config.yml: |
+  config.yaml: |
     server:
       port: "8080"
       host: localhost
