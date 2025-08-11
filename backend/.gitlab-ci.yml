@@ -41,7 +41,7 @@ backend-build:
   image: quay.io/podman/stable
   tags: [ docker]
   dependencies:
-    - prepare-backend
+    - backend-prepare
   before_script:
     - cat conf/registry.conf >> /etc/containers/registries.conf
     - podman login --tls-verify=false -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $REGISTRY
