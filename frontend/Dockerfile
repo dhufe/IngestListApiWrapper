@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-RUN npm run build --production
+RUN ng build --configuration production
 
 FROM docker.io/nginx:alpine AS prod
 
