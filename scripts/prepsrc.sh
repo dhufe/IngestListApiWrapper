@@ -47,7 +47,3 @@ if [ ! -f zip/ingestlist-${INGESTLIST_RELEASE}.zip ]; then
 fi
 
 unzip -q -o ${CI_PROJECT_DIR}/zip/ingestlist-${INGESTLIST_RELEASE}.zip -d ${CI_PROJECT_DIR}/sources/ingestlist-${INGESTLIST_RELEASE}/
-
-# versions equal or higher than 7.1.0
-mv "${CI_PROJECT_DIR}"/sources/ingestlist-"${INGESTLIST_RELEASE}"/ingestlist/lib/ingestlist-"${INGESTLIST_RELEASE}".jar "${CI_PROJECT_DIR}"/sources/ingestlist-"${INGESTLIST_RELEASE}"/ingestlist/lib/ingestlist.jar
-
