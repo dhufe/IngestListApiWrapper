@@ -36,19 +36,25 @@ backend-prepare:
     - changes:
         - backend/**/*
 
+
+include:
+  - component: podman-build@1.0.0  # aus dem CI/CD-Katalog
+
 backend-build:
-  stage: build
-  image: quay.io/podman/stable
-  tags: [ docker]
-  dependencies:
-    - backend-prepare
-  before_script:
-    - cat conf/registry.conf >> /etc/containers/registries.conf
-    - podman login --tls-verify=false -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $REGISTRY
-  script:
-    - cp -R sources/ingestlist-${INGESTLIST_RELEASE}/ingestlist/ backend/third
-    - podman build -t $REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE} backend/
-    - podman push $REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE}
-  rules:
-    - changes:
-        - backend/**/*
+  extends: .podman-build
+  variables:
+    # Standard-Variablen für podman-build
+    REGISTRY: "default-route-openshift-image-registry.apps.kubecluster.blha.mwfk.ad.lvnbb.de/dimag"
+    BUILD_CONTEXT: "backend"
+    IMAGE_TAG: "$REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE}"
+    IS_LATEST: "false"  # Kein :latest-Tag
+
+    # Backend-spezifische Variablen
+    INGESTLIST_RELEASE: "1.2.0"
+
+    # Benutzerdefiniertes Skript (wird vor dem Build ausgeführt)
+    BEFORE_BUILD_SCRIPT: |
+      cp -R sources/ingestlist-${INGESTLIST_RELEASE}/ingestlist/ backend/third
+
+  # Abhängigkeit zu backend-prepare
+  needs: ["backend-prepare"]
