@@ -50,5 +50,5 @@ include:
 
 backend-build:
   stage: build
-  extends: podman-blha-build
+  extends: .podman-blha-build
   needs: ["backend-prepare"]
