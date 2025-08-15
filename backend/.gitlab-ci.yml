@@ -39,23 +39,16 @@ backend-prepare:
 
 include:
   - component: $CI_SERVER_FQDN/components/gitlab-ci-templates/podman-blha-build@1.1.9
+    with:
+      REGISTRY: "default-route-openshift-image-registry.apps.kubecluster.blha.mwfk.ad.lvnbb.de/dimag"
+      IMAGE_TAG: "$REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE}"
+      BUILD_CONTEXT: "backend"
+      IS_LATEST: true
+      INGESTLIST_RELEASE: "7.2.0"
+      BEFORE_BUILD_SCRIPT: |
+        cp -R sources/ingestlist-${INGESTLIST_RELEASE}/ingestlist/ backend/third
 
 backend-build:
   stage: build
-  extends: .podman-blha-build
-  variables:
-    # Standard-Variablen für podman-build
-    REGISTRY: "default-route-openshift-image-registry.apps.kubecluster.blha.mwfk.ad.lvnbb.de/dimag"
-    BUILD_CONTEXT: "backend"
-    IMAGE_TAG: "$REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE}"
-    IS_LATEST: "false"  # Kein :latest-Tag
-
-    # Backend-spezifische Variablen
-    INGESTLIST_RELEASE: "1.2.0"
-
-    # Benutzerdefiniertes Skript (wird vor dem Build ausgeführt)
-    BEFORE_BUILD_SCRIPT: |
-      cp -R sources/ingestlist-${INGESTLIST_RELEASE}/ingestlist/ backend/third
-
-  # Abhängigkeit zu backend-prepare
+  extends: podman-blha-build
   needs: ["backend-prepare"]
