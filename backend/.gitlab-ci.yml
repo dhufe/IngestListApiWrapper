@@ -41,7 +41,7 @@ include:
   - component: $CI_SERVER_FQDN/components/gitlab-ci-templates/podman-blha-build@1.1.9
 
 backend-build:
-  extends: .podman-build
+  extends: .podman-blha-build
   variables:
     # Standard-Variablen für podman-build
     REGISTRY: "default-route-openshift-image-registry.apps.kubecluster.blha.mwfk.ad.lvnbb.de/dimag"
