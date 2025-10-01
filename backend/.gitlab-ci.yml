@@ -36,19 +36,19 @@ backend-prepare:
     - changes:
         - backend/**/*
 
-
-include:
-  - component: $CI_SERVER_FQDN/components/gitlab-ci-templates/podman-blha-build@1.2.0
-    with:
-      REGISTRY: "default-route-openshift-image-registry.apps.kubecluster.blha.mwfk.ad.lvnbb.de/dimag"
-      IMAGE_TAG: "$REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE}"
-      BUILD_CONTEXT: "backend"
-      IS_LATEST: true
-      INGESTLIST_RELEASE: "7.2.0"
-      BEFORE_BUILD_SCRIPT: |
-        cp -R sources/ingestlist-${INGESTLIST_RELEASE}/ingestlist/ backend/third
-
 backend-build:
   stage: build
-  extends: .podman-blha-build
-  needs: ["backend-prepare"]
+  image: quay.io/podman/stable
+  tags: [ docker]
+  dependencies:
+    - backend-prepare
+  before_script:
+    - cat conf/registry.conf >> /etc/containers/registries.conf
+    - podman login --tls-verify=false -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $REGISTRY
+  script:
+    - cp -R sources/ingestlist-${INGESTLIST_RELEASE}/ingestlist/ backend/third
+    - podman build -t $REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE} backend/
+    - podman push $REGISTRY/ingestlistwrapper_backend:${INGESTLIST_RELEASE}
+  rules:
+    - changes:
+        - backend/**/*
