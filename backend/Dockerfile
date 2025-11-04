@@ -26,10 +26,10 @@ RUN echo "PROXY_HOST=$PROXY_HOST" >> /etc/environment \
     && echo "PROXY_PORT=$PROXY_PORT" >> /etc/environment \
     && sed -i \
     's|exec "\$JAVACMD" "\$@"|exec "\$JAVACMD" \
-        -Dhttp.proxyHost=$PROXY_HOST \
-        -Dhttp.proxyPort=$PROXY_PORT \
-        -Dhttps.proxyHost=$PROXY_HOST \
-        -Dhttps.proxyPort=$PROXY_PORT \
+        -Dhttp.proxyHost='$PROXY_HOST' \
+        -Dhttp.proxyPort='$PROXY_PORT' \
+        -Dhttps.proxyHost="'PROXY_HOST' \
+        -Dhttps.proxyPort='$PROXY_PORT' \
         "\$@"|' \
         /app/third/bin/ingestlist \
     && chmod +x /app/third/bin/ingestlist
