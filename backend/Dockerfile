@@ -1,4 +1,9 @@
 FROM docker.io/golang:1.24.6-alpine3.22 AS build
+
+ARG PROXY="host:port"
+ENV PROXY_HOST=$(echo $PROXY | cut -d: -f1)
+ENV PROXY_PORT=$(echo $PROXY | cut -d: -f2)
+
 RUN apk update --no-cache -U \
   && apk add --no-cache gcc g++ git make build-base
 WORKDIR /app 
@@ -13,8 +18,26 @@ RUN apk update --no-cache -U \
   && file openjdk21-jre
 WORKDIR /app 
 COPY --from=build /app/apiwrapper ./apiwrapper
+
+RUN sed -i \
+    's|exec "\$JAVACMD" "\$@"|exec "\$JAVACMD" \
+        -Dhttp.proxyHost="'$PROXY_HOST'" \
+        -Dhttp.proxyPort="'$PROXY_PORT'" \
+        -Dhttps.proxyHost="'$PROXY_HOST'" \
+        -Dhttps.proxyPort="'$PROXY_PORT'" \
+        "\$@"|' \
+    /third/start.sh
+
 COPY ./third /app/third
-RUN chmod +x /app/third/bin/ingestlist
+RUN sed -i \
+    's|exec "\$JAVACMD" "\$@"|exec "\$JAVACMD" \
+        -Dhttp.proxyHost="'$PROXY_HOST'" \
+        -Dhttp.proxyPort="'$PROXY_PORT'" \
+        -Dhttps.proxyHost="'$PROXY_HOST'" \
+        -Dhttps.proxyPort="'$PROXY_PORT'" \
+        "\$@"|' \
+    /app/third/bin/ingestlist \
+    && chmod +x /app/third/bin/ingestlist
 CMD ["./apiwrapper"]
 
 EXPOSE 8080
