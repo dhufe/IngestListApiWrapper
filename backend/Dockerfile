@@ -24,24 +24,19 @@ RUN apk update --no-cache -U \
 WORKDIR /app 
 COPY --from=build /app/apiwrapper ./apiwrapper
 
-RUN sed -i \
-    's|exec "\$JAVACMD" "\$@"|exec "\$JAVACMD" \
-        -Dhttp.proxyHost="'$PROXY_HOST'" \
-        -Dhttp.proxyPort="'$PROXY_PORT'" \
-        -Dhttps.proxyHost="'$PROXY_HOST'" \
-        -Dhttps.proxyPort="'$PROXY_PORT'" \
-        "\$@"|' \
-    /third/start.sh
-
 COPY ./third /app/third
-RUN sed -i \
+RUN PROXY_HOST=$(echo $PROXY | cut -d/ -f3 | cut -d: -f1) \
+    && PROXY_PORT=$(echo $PROXY | cut -d/ -f3 | cut -d: -f2) \
+    && echo "PROXY_HOST=$PROXY_HOST" >> /etc/environment \
+    && echo "PROXY_PORT=$PROXY_PORT" >> /etc/environment \
+    && sed -i \
     's|exec "\$JAVACMD" "\$@"|exec "\$JAVACMD" \
         -Dhttp.proxyHost="'$PROXY_HOST'" \
         -Dhttp.proxyPort="'$PROXY_PORT'" \
         -Dhttps.proxyHost="'$PROXY_HOST'" \
         -Dhttps.proxyPort="'$PROXY_PORT'" \
         "\$@"|' \
-    /app/third/bin/ingestlist \
+        /app/third/bin/ingestlist \
     && chmod +x /app/third/bin/ingestlist
 CMD ["./apiwrapper"]
 
