@@ -13,9 +13,8 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o apiwrapper ./cmd/server/
 
 FROM alpine:3.21 AS prod
 
-ARG PROXY="http://fire.lvnbb.de:80"
-ENV PROXY_HOST=$(echo $PROXY | cut -d: -f1)
-ENV PROXY_PORT=$(echo $PROXY | cut -d: -f2)
+ARG PROXY_HOST="http://fire.lvnbb.de"
+ARG PROXY_PORT="80"
 
 RUN apk update --no-cache -U \
   && apk add --no-cache curl tzdata bash \
