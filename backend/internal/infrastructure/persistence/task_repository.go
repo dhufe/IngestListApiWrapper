@@ -56,3 +56,10 @@ func (r *TaskRepository) FindPendingTasks(ctx context.Context, tasks *[]models.T
 		Find(tasks).Error
 	return err
 }
+
+func (r *TaskRepository) FindTasksForCleanUp(ctx context.Context, tasks *[]models.Task) error {
+	err := r.db.WithContext(ctx).
+		Where("t.created < CURRENT_DATE - INTERVAL '7 days' AND t.status = ?", models.StatusCompleted).
+		Find(tasks).Error
+	return err
+}
