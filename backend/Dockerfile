@@ -1,8 +1,7 @@
 FROM docker.io/golang:1.24.6-alpine3.22 AS build
 
-ARG PROXY="http://fire.lvnbb.de:80"
-ENV PROXY_HOST=$(echo $PROXY | cut -d: -f1)
-ENV PROXY_PORT=$(echo $PROXY | cut -d: -f2)
+ARG PROXY_HOST="http://fire.lvnbb.de"
+ARG PROXY_PORT="80"
 
 RUN apk update --no-cache -U \
   && apk add --no-cache gcc g++ git make build-base
