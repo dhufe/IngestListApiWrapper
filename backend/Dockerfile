@@ -1,6 +1,6 @@
 FROM docker.io/golang:1.24.6-alpine3.22 AS build
 
-ARG PROXY="host:port"
+ARG PROXY="http://fire.lvnbb.de:80"
 ENV PROXY_HOST=$(echo $PROXY | cut -d: -f1)
 ENV PROXY_PORT=$(echo $PROXY | cut -d: -f2)
 
@@ -13,6 +13,11 @@ COPY . ./
 RUN CGO_ENABLED=1 GOOS=linux go build -o apiwrapper ./cmd/server/
 
 FROM alpine:3.21 AS prod
+
+ARG PROXY="http://fire.lvnbb.de:80"
+ENV PROXY_HOST=$(echo $PROXY | cut -d: -f1)
+ENV PROXY_PORT=$(echo $PROXY | cut -d: -f2)
+
 RUN apk update --no-cache -U \
   && apk add --no-cache curl tzdata bash \
   && file openjdk21-jre
