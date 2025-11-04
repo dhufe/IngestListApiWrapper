@@ -51,6 +51,17 @@ func (s *TaskScheduler) Start() {
 		log.Fatalf("Failed to add cron job: %v", err)
 	}
 
+	_, err = s.cron.AddFunc("0 0 * * *", func() {
+		ctx := context.Background()
+		tasks, err := s.service.GetTasksForCleanUp(ctx)
+		log.Printf("Found %d tasks for cleanup.", len(tasks))
+
+		if err != nil {
+			log.Printf("Error finding due tasks: %v", err)
+			return
+		}
+	})
+
 	s.cron.Start()
 }
 
