@@ -28,7 +28,7 @@ RUN echo "PROXY_HOST=$PROXY_HOST" >> /etc/environment \
     's|exec "\$JAVACMD" "\$@"|exec "\$JAVACMD" \
         -Dhttp.proxyHost='$PROXY_HOST' \
         -Dhttp.proxyPort='$PROXY_PORT' \
-        -Dhttps.proxyHost='PROXY_HOST' \
+        -Dhttps.proxyHost='$PROXY_HOST' \
         -Dhttps.proxyPort='$PROXY_PORT' \
         "\$@"|' \
         /app/third/bin/ingestlist \
