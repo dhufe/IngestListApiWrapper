@@ -17,8 +17,7 @@ ARG PROXY_HOST="http://fire.lvnbb.de"
 ARG PROXY_PORT="80"
 
 RUN apk update --no-cache -U \
-  && apk add --no-cache curl tzdata bash \
-  && file openjdk21-jre
+  && apk add --no-cache curl tzdata bash file openjdk21-jre
 WORKDIR /app 
 COPY --from=build /app/apiwrapper ./apiwrapper
 
