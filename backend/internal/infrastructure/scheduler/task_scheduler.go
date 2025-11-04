@@ -61,6 +61,9 @@ func (s *TaskScheduler) Start() {
 			return
 		}
 	})
+	if err != nil {
+		log.Fatalf("Failed to add cron cleanup job: %v", err)
+	}
 
 	s.cron.Start()
 }
