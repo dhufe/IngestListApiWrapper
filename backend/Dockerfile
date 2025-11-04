@@ -13,7 +13,6 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o apiwrapper ./cmd/server/
 
 FROM alpine:3.21 AS prod
 
-
 ARG PROXY_HOST="fire.lvnbb.de"
 ARG PROXY_PORT="80"
 
