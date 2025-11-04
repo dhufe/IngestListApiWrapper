@@ -22,9 +22,7 @@ WORKDIR /app
 COPY --from=build /app/apiwrapper ./apiwrapper
 
 COPY ./third /app/third
-RUN PROXY_HOST=$(echo $PROXY | cut -d/ -f3 | cut -d: -f1) \
-    && PROXY_PORT=$(echo $PROXY | cut -d/ -f3 | cut -d: -f2) \
-    && echo "PROXY_HOST=$PROXY_HOST" >> /etc/environment \
+RUN echo "PROXY_HOST=$PROXY_HOST" >> /etc/environment \
     && echo "PROXY_PORT=$PROXY_PORT" >> /etc/environment \
     && sed -i \
     's|exec "\$JAVACMD" "\$@"|exec "\$JAVACMD" \
