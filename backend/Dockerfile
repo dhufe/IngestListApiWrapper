@@ -1,6 +1,6 @@
 FROM docker.io/golang:1.24.6-alpine3.22 AS build
 
-ARG PROXY_HOST="http://fire.lvnbb.de"
+ARG PROXY_HOST="fire.lvnbb.de"
 ARG PROXY_PORT="80"
 
 RUN apk update --no-cache -U \
@@ -13,7 +13,7 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o apiwrapper ./cmd/server/
 
 FROM alpine:3.21 AS prod
 
-ARG PROXY_HOST="http://fire.lvnbb.de"
+ARG PROXY_HOST="fire.lvnbb.de"
 ARG PROXY_PORT="80"
 
 RUN apk update --no-cache -U \
@@ -26,10 +26,10 @@ RUN echo "PROXY_HOST=$PROXY_HOST" >> /etc/environment \
     && echo "PROXY_PORT=$PROXY_PORT" >> /etc/environment \
     && sed -i \
     's|exec "\$JAVACMD" "\$@"|exec "\$JAVACMD" \
-        -Dhttp.proxyHost="'$PROXY_HOST'" \
-        -Dhttp.proxyPort="'$PROXY_PORT'" \
-        -Dhttps.proxyHost="'$PROXY_HOST'" \
-        -Dhttps.proxyPort="'$PROXY_PORT'" \
+        -Dhttp.proxyHost=$PROXY_HOST \
+        -Dhttp.proxyPort=$PROXY_PORT \
+        -Dhttps.proxyHost=$PROXY_HOST \
+        -Dhttps.proxyPort=$PROXY_PORT \
         "\$@"|' \
         /app/third/bin/ingestlist \
     && chmod +x /app/third/bin/ingestlist
