@@ -52,6 +52,11 @@ func (s *TaskService) DeleteTask(ctx context.Context, taskID uint) error {
 	return s.repo.Delete(ctx, taskID)
 }
 
+func (s *TaskService) GetTasksForCleanUp(ctx context.Context) ([]models.Task, error) {
+	tasks, err := s.repo.FindTasksForCleanUp(ctx)
+	return tasks, err
+}
+
 func (s *TaskService) GetAllTasks(ctx context.Context) ([]models.Task, error) {
 	tasks, err := s.repo.FindAll(ctx)
 	return tasks, err
