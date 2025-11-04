@@ -14,4 +14,5 @@ type TaskRepository interface {
 	Update(ctx context.Context, task *models.Task) error
 	Delete(ctx context.Context, id uint) error
 	FindPendingTasks(ctx context.Context, tasks *[]models.Task) error
+	FindTaskForCleanUp(ctx context.Context, tasks *[]models.Task) error
 }
