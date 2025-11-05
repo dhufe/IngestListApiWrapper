@@ -2,6 +2,8 @@ package worker
 
 import (
 	"context"
+	"log"
+	"os"
 	"sync"
 
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/interfaces"
@@ -30,6 +32,20 @@ func (w *CleanUpWorker) ProcessTask(ctx context.Context, task *models.Task) {
 		<-w.semaphore
 		w.wg.Done()
 	}()
+
+	fileName := task.FileName
+
+	// check if file exist
+	_, err := os.Stat(fileName)
+	if os.IsNotExist(err) {
+
+		err = os.Remove(fileName)
+		if err != nil {
+			log.Printf("Error deleting file %s -> %v", fileName, err)
+		}
+		// Finally delete the task using the repo
+		w.repo.Delete(ctx, task.ID)
+	}
 }
 
 func (w *CleanUpWorker) StartTaskProcessing(ctx context.Context, task *models.Task) {
