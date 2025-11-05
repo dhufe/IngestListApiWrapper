@@ -11,22 +11,25 @@ import (
 )
 
 type TaskScheduler struct {
-	service  *services.TaskService
-	worker   *worker.TaskWorker
-	cron     *cron.Cron
-	schedule string
+	service       *services.TaskService
+	taskWorker    *worker.TaskWorker
+	cleanUpWorker *worker.CleanUpWorker
+	cron          *cron.Cron
+	schedule      string
 }
 
 func NewTaskScheduler(
 	service *services.TaskService,
-	worker *worker.TaskWorker,
+	taskWorker *worker.TaskWorker,
+	cleanUpWorker *worker.CleanUpWorker,
 	schedule string,
 ) *TaskScheduler {
 	return &TaskScheduler{
-		service:  service,
-		worker:   worker,
-		cron:     cron.New(cron.WithSeconds()),
-		schedule: schedule,
+		service:       service,
+		taskWorker:    taskWorker,
+		cleanUpWorker: cleanUpWorker,
+		cron:          cron.New(cron.WithSeconds()),
+		schedule:      schedule,
 	}
 }
 
@@ -44,7 +47,7 @@ func (s *TaskScheduler) Start() {
 
 		// Tasks verarbeiten
 		for _, task := range tasks {
-			s.worker.StartTaskProcessing(ctx, &task)
+			s.taskWorker.StartTaskProcessing(ctx, &task)
 		}
 	})
 	if err != nil {
@@ -70,5 +73,6 @@ func (s *TaskScheduler) Start() {
 
 func (s *TaskScheduler) Stop() {
 	s.cron.Stop()
-	s.worker.Wait()
+	s.taskWorker.Wait()
+	s.cleanUpWorker.Wait()
 }

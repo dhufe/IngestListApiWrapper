@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
-
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/persistence"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/scheduler"
 	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/worker"
@@ -40,9 +39,14 @@ func main() {
 
 	// Worker erstellen (max. Anzahl v. parallelen Tasks)
 	taskWorker := worker.NewTaskWorker(taskRepo, cfg.TaskScheduler.MaxWorkers)
-
+	cleanUpWorker := worker.NewCleanUpWorker(taskRepo, cfg.TaskScheduler.MaxWorkers)
 	// Scheduler starten
-	taskScheduler := scheduler.NewTaskScheduler(taskService, taskWorker, cfg.TaskScheduler.Interval)
+	taskScheduler := scheduler.NewTaskScheduler(
+		taskService,
+		taskWorker,
+		cleanUpWorker,
+		cfg.TaskScheduler.Interval,
+	)
 	taskScheduler.Start()
 	defer taskScheduler.Stop()
 
