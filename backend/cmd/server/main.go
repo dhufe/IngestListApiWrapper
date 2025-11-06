@@ -34,9 +34,10 @@ func main() {
 	// Repository erstellen
 	taskRepo := persistence.NewTaskRepository(db)
 	userRepo := persistence.NewUserRepository(db)
+
 	// Service erstellen
 	taskService := services.NewTaskService(taskRepo, cfg.TaskScheduler.FileStoragePath)
-
+	metricService := services.NewMetricsService(taskRepo, cfg.TaskScheduler.FileStoragePath)
 	// Worker erstellen (max. Anzahl v. parallelen Tasks)
 	taskWorker := worker.NewTaskWorker(taskRepo, cfg.TaskScheduler.MaxWorkers)
 	cleanUpWorker := worker.NewCleanUpWorker(taskRepo, cfg.TaskScheduler.MaxWorkers)
@@ -58,7 +59,7 @@ func main() {
 
 	// HTTP-Server erstellen und starten
 	// server := http.NewServer(taskHandler)
-	server := http.NewRouter(authService, taskService)
+	server := http.NewRouter(authService, taskService, metricService)
 	go func() {
 		if err := server.Run(cfg.Server.Host + ":" + cfg.Server.Port); err != nil {
 			log.Fatalf("Server error: %v", err)
