@@ -14,6 +14,7 @@ import (
 func NewRouter(
 	authService *services.AuthService,
 	taskService *services.TaskService,
+	metricsService *services.MetricsService,
 ) *gin.Engine {
 	router := gin.Default()
 
@@ -33,6 +34,9 @@ func NewRouter(
 	// Handler initialisieren
 	authHandler := handlers.NewAuthHandler(authService)
 	taskHandler := handlers.NewTaskHandler(taskService)
+	metricsHanlder := handlers.NewMetricsHandler(metricsService)
+	/// Prometheus
+	router.GET("metrics", metricsHanlder.GetMetrics)
 
 	// public endpoints
 	api := router.Group("/api")
