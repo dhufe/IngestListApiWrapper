@@ -1,9 +1,8 @@
 package handlers
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
 )
@@ -19,5 +18,6 @@ func NewMetricsHandler(service *services.MetricsService) *MetricsHandler {
 }
 
 func (h *MetricsHandler) GetMetrics(c *gin.Context) {
-	c.JSON(http.StatusOK, nil)
+	hp := promhttp.Handler()
+	hp.ServeHTTP(c.Writer, c.Request)
 }
