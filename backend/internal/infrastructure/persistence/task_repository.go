@@ -64,3 +64,52 @@ func (r *TaskRepository) FindTasksForCleanUp(ctx context.Context) ([]models.Task
 		Find(tasks).Error
 	return tasks, err
 }
+
+func (r *TaskRepository) Count(ctx context.Context) (int, error) {
+	var count int64
+	err := r.db.WithContext(ctx).
+		Model(&models.Task{}).
+		Count(&count).
+		Error
+
+	return int(count), err
+}
+
+// CountByStatus - nach Status filtern
+func (r *TaskRepository) CountByStatus(ctx context.Context, status models.TaskStatus) (int, error) {
+	var count int64
+	err := r.db.WithContext(ctx).
+		Model(&models.Task{}).
+		Where("status = ?", status).
+		Count(&count).
+		Error
+
+	return int(count), err
+}
+
+func (r *TaskRepository) CountByAllStatuses(
+	ctx context.Context,
+) (map[models.TaskStatus]int, error) {
+	type Result struct {
+		Status models.TaskStatus
+		Count  int
+	}
+
+	var results []Result
+	err := r.db.WithContext(ctx).
+		Model(&models.Task{}).
+		Select("status, COUNT(*) as count").
+		Group("status").
+		Scan(&results).
+		Error
+	if err != nil {
+		return nil, err
+	}
+
+	counts := make(map[models.TaskStatus]int)
+	for _, r := range results {
+		counts[r.Status] = r.Count
+	}
+
+	return counts, nil
+}

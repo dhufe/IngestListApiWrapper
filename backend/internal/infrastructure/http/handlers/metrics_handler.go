@@ -18,6 +18,13 @@ func NewMetricsHandler(service *services.MetricsService) *MetricsHandler {
 }
 
 func (h *MetricsHandler) GetMetrics(c *gin.Context) {
+	// Metriken aktualisieren bevor Prometheus sie scraped
+	if err := h.service.UpdateMetrics(c.Request.Context()); err != nil {
+		// Fehler loggen, aber trotzdem Metriken ausgeben
+		// (andere Metriken wie HTTP-Requests funktionieren ja noch)
+		c.Error(err) // Gin's Error-Handler
+	}
+
 	hp := promhttp.Handler()
 	hp.ServeHTTP(c.Writer, c.Request)
 }
