@@ -10,11 +10,10 @@ type (
 )
 
 const (
-	StatusPending     TaskStatus = "Pending"
-	StatusRunning     TaskStatus = "Running"
-	StatusProgressing TaskStatus = "Progressing"
-	StatusCompleted   TaskStatus = "Completed"
-	StatusFailed      TaskStatus = "Failed"
+	StatusPending   TaskStatus = "Pending"
+	StatusRunning   TaskStatus = "Running"
+	StatusCompleted TaskStatus = "Completed"
+	StatusFailed    TaskStatus = "Failed"
 
 	TypeBagit    TaskType = "Bagit"
 	TypeIdentify TaskType = "Identify"
@@ -38,7 +37,6 @@ func AllTaskStatuses() []TaskStatus {
 	return []TaskStatus{
 		StatusPending,
 		StatusRunning,
-		StatusProgressing,
 		StatusCompleted,
 		StatusFailed,
 	}

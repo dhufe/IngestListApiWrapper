@@ -139,7 +139,7 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 	}
 
 	status := models.TaskStatus(request.Status)
-	if status != models.StatusPending && status != models.StatusProgressing &&
+	if status != models.StatusPending && status != models.StatusRunning &&
 		status != models.StatusCompleted && status != models.StatusFailed {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid status"})
 		return
