@@ -39,16 +39,22 @@ func (w *CleanUpWorker) ProcessTask(ctx context.Context, task *models.Task) {
 
 	fileName := task.FileName
 
-	// check if file exist
-	_, err := os.Stat(fileName)
-	if os.IsNotExist(err) && strings.Contains(fileName, w.fileStoragePath) {
+	// check if the file was uploaded and stored locally
+	if strings.Contains(fileName, w.fileStoragePath) {
+		// check if file really exist
+		_, err := os.Stat(fileName)
+		if os.IsNotExist(err) {
 
-		err = os.Remove(fileName)
-		if err != nil {
-			log.Printf("Error deleting file %s -> %v", fileName, err)
+			err = os.Remove(fileName)
+			if err != nil {
+				log.Printf("Error deleting file %s -> %v", fileName, err)
+			}
 		}
-		// Finally delete the task using the repo
-		w.repo.Delete(ctx, task.ID)
+	}
+	// Finally delete the task using the repo
+	err := w.repo.Delete(ctx, task.ID)
+	if err != nil {
+		log.Printf("Error deleting task %s -> %v ", fileName, err)
 	}
 }
 

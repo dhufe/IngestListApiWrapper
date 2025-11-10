@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
@@ -22,7 +24,10 @@ func (h *MetricsHandler) GetMetrics(c *gin.Context) {
 	if err := h.service.UpdateMetrics(c.Request.Context()); err != nil {
 		// Fehler loggen, aber trotzdem Metriken ausgeben
 		// (andere Metriken wie HTTP-Requests funktionieren ja noch)
-		c.Error(err) // Gin's Error-Handler
+		err := c.Error(err) // Gin's Error-Handler
+		if err != nil {
+			log.Printf("Can not pass err to gins Error-Handler: %v", err)
+		}
 	}
 
 	hp := promhttp.Handler()
