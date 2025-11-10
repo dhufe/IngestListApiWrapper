@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/interfaces"
@@ -11,18 +12,21 @@ import (
 )
 
 type CleanUpWorker struct {
-	repo      interfaces.TaskRepository
-	semaphore chan struct{}
-	wg        sync.WaitGroup
+	repo            interfaces.TaskRepository
+	semaphore       chan struct{}
+	wg              sync.WaitGroup
+	fileStoragePath string
 }
 
 func NewCleanUpWorker(
 	repo interfaces.TaskRepository,
 	maxWorkers int,
+	storagePath string,
 ) *CleanUpWorker {
 	return &CleanUpWorker{
-		repo:      repo,
-		semaphore: make(chan struct{}, maxWorkers),
+		repo:            repo,
+		semaphore:       make(chan struct{}, maxWorkers),
+		fileStoragePath: storagePath,
 	}
 }
 
@@ -37,7 +41,7 @@ func (w *CleanUpWorker) ProcessTask(ctx context.Context, task *models.Task) {
 
 	// check if file exist
 	_, err := os.Stat(fileName)
-	if os.IsNotExist(err) {
+	if os.IsNotExist(err) && strings.Contains(fileName, w.fileStoragePath) {
 
 		err = os.Remove(fileName)
 		if err != nil {

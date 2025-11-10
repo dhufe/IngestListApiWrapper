@@ -40,7 +40,11 @@ func main() {
 	metricService := services.NewMetricsService(taskRepo, cfg.TaskScheduler.FileStoragePath)
 	// Worker erstellen (max. Anzahl v. parallelen Tasks)
 	taskWorker := worker.NewTaskWorker(taskRepo, cfg.TaskScheduler.MaxWorkers)
-	cleanUpWorker := worker.NewCleanUpWorker(taskRepo, cfg.TaskScheduler.MaxWorkers)
+	cleanUpWorker := worker.NewCleanUpWorker(
+		taskRepo,
+		cfg.TaskScheduler.MaxWorkers,
+		cfg.TaskScheduler.FileStoragePath,
+	)
 	// Scheduler starten
 	taskScheduler := scheduler.NewTaskScheduler(
 		taskService,
