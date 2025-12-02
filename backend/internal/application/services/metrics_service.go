@@ -6,9 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/interfaces"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
-	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/metrics"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/tasks/interfaces"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/tasks/models"
+	"hufschlager.net/IngestListApiWrapper/internal/infrastructure/metrics"
 )
 
 type MetricsService struct {

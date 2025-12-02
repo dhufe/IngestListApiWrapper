@@ -6,8 +6,8 @@ import (
 
 	"github.com/robfig/cron/v3"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
-	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/worker"
+	"hufschlager.net/IngestListApiWrapper/internal/application/services"
+	"hufschlager.net/IngestListApiWrapper/internal/infrastructure/worker"
 )
 
 type TaskScheduler struct {

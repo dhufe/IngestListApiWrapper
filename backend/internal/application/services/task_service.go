@@ -3,8 +3,8 @@ package services
 import (
 	"context"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/interfaces"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/tasks/interfaces"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/tasks/models"
 )
 
 type TaskService struct {

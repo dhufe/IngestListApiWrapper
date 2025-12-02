@@ -5,8 +5,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/user/interfaces"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/user/models"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/user/interfaces"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/user/models"
 )
 
 type UserRepository struct {

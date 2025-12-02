@@ -7,12 +7,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
-	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/persistence"
-	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/scheduler"
-	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/worker"
-	"github.com/dhufe/IngestListApiWrapper/internal/interfaces/http"
-	"github.com/dhufe/IngestListApiWrapper/pkg/config"
+	"hufschlager.net/IngestListApiWrapper/internal/application/services"
+	"hufschlager.net/IngestListApiWrapper/internal/infrastructure/persistence"
+	"hufschlager.net/IngestListApiWrapper/internal/infrastructure/scheduler"
+	"hufschlager.net/IngestListApiWrapper/internal/infrastructure/worker"
+	"hufschlager.net/IngestListApiWrapper/internal/interfaces/http"
+	"hufschlager.net/IngestListApiWrapper/pkg/config"
 )
 
 func main() {

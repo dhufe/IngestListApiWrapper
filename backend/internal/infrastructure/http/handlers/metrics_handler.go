@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
+	"hufschlager.net/IngestListApiWrapper/internal/application/services"
 )
 
 type MetricsHandler struct {

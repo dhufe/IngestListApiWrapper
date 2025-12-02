@@ -6,9 +6,9 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
-	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/http/handlers"
-	"github.com/dhufe/IngestListApiWrapper/internal/infrastructure/http/middleware"
+	"hufschlager.net/IngestListApiWrapper/internal/application/services"
+	"hufschlager.net/IngestListApiWrapper/internal/infrastructure/http/handlers"
+	"hufschlager.net/IngestListApiWrapper/internal/infrastructure/http/middleware"
 )
 
 func NewRouter(

@@ -1,4 +1,4 @@
-module github.com/dhufe/IngestListApiWrapper
+module hufschlager.net/IngestListApiWrapper
 
 go 1.24.5
 

@@ -9,8 +9,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/user/interfaces"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/user/models"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/user/interfaces"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/user/models"
 )
 
 var (

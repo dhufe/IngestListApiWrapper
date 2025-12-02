@@ -36,3 +36,15 @@ RUN echo "PROXY_HOST=$PROXY_HOST" >> /etc/environment \
 CMD ["./apiwrapper"]
 
 EXPOSE 8080
+
+java -jar cli/target/bagit-cli-1.1.0.jar create ~/docs/notes/ /tmp/test_bag
+
+java -jar cli/target/bagit-cli-1.1.0.jar create ~/docs/notes/ /tmp/test_bag \
+  --algorithm SHA512 \
+  --metadata "Source-Organization=DIMAG" \
+  --metadata "Contact-Name=John Doe" \
+  --metadata "Contact-Email=john@example.com" \
+  --metadata "Bagging-Date=2024-01-15" \
+  --metadata "External-Description=Important research data" \
+  --metadata "External-Identifier=doi:10.1234/example" \
+  --verbose

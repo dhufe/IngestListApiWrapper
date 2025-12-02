@@ -3,7 +3,7 @@ package interfaces
 import (
 	"context"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/user/models"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/user/models"
 )
 
 type UserRepository interface {

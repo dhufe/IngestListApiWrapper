@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/interfaces"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/tasks/interfaces"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/tasks/models"
 )
 
 type TaskWorker struct {

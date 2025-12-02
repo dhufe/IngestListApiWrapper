@@ -10,8 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
+	"hufschlager.net/IngestListApiWrapper/internal/application/services"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/tasks/models"
 )
 
 type TaskHandler struct {

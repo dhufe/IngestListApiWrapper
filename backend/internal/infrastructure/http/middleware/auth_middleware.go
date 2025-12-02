@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/application/services"
+	"hufschlager.net/IngestListApiWrapper/internal/application/services"
 )
 
 // AuthMiddleware ist ein HTTP-Middleware-Handler für JWT-Authentifizierung

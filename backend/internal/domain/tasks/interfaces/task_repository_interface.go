@@ -3,7 +3,7 @@ package interfaces
 import (
 	"context"
 
-	"github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
+	"hufschlager.net/IngestListApiWrapper/internal/domain/tasks/models"
 )
 
 type TaskRepository interface {

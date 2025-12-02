@@ -10,8 +10,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	TaskModel "github.com/dhufe/IngestListApiWrapper/internal/domain/tasks/models"
-	UserModel "github.com/dhufe/IngestListApiWrapper/internal/domain/user/models"
+	TaskModel "hufschlager.net/IngestListApiWrapper/internal/domain/tasks/models"
+	UserModel "hufschlager.net/IngestListApiWrapper/internal/domain/user/models"
 )
 
 var (
