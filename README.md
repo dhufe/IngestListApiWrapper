@@ -1,6 +1,6 @@
-## 🚀 ILWrapper API – Documentation and Quickstart
+## 🚀 DIMAG IngestList API Wrapper – Documentation and Quickstart
 
-This README describes the available endpoints of the ILWrapper API and shows how to quickly try them out.
+This README describes the available endpoints of the DIMAG IngestList API Wrapper and shows how to quickly try them out.
 
 > Tip: The examples are designed so you can copy‑paste and run them directly in your terminal.
 
@@ -202,7 +202,7 @@ Example Grafana/PromQL queries:
 
 ```bash
 # 1) Set the base URL (adapt to your environment if needed)
-export BASE_URL="http://blha-dimagapps-ilwrapper"
+export BASE_URL="http://dimagapps-ilwrapper"
 
 # 2) Log in and store the token in $TOKEN
 TOKEN=$(curl -sS -X POST "$BASE_URL/api/login" \
@@ -221,7 +221,7 @@ curl -sS -X POST "$BASE_URL/api/create" \
 It’s convenient to set an environment variable for the base URL:
 
 ```bash
-export BASE_URL="http://blha-dimagapps-ilwrapper"
+export BASE_URL="http://dimagapps-ilwrapper"
 ```
 
 ### 🧰 Prerequisites
