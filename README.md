@@ -33,8 +33,7 @@ A quick, skimmable summary of what this project provides.
 
 ### 📚 Table of Contents
 
-- [Overview / Highlights](#overview--highlights)
-- [Project Structure](#project-structure)
+- [Project Structure](#project structure)
 - [Dependencies](#dependencies)
 - [Notes](#notes)
 - [Configuration](#configuration)
@@ -59,8 +58,6 @@ A quick, skimmable summary of what this project provides.
 - [Kubernetes](#kubernetes)
 - [Feedback & Contributions](#feedback--contributions)
 - [License](#license)
-
-> Note: In GitHub you can click TOC links to jump straight to a section.
 
 ---
 
@@ -128,7 +125,7 @@ This application reads configuration from a YAML file. If no file exists, a defa
   2. `./config/config.yaml`
   3. `/etc/IngestListApiWrapper/config.yaml`
 
-Default values used when the file is created:
+Default values are used when the file is created:
 
 ```yaml
 server:
