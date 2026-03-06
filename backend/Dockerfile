@@ -1,4 +1,4 @@
-FROM docker.io/golang:1.26.0-alpine3.22 AS build
+FROM docker.io/golang:1.26.1-alpine3.22 AS build
 
 ARG PROXY_HOST="fire.lvnbb.de"
 ARG PROXY_PORT="80"
