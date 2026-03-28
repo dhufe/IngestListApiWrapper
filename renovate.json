@@ -1,4 +1,23 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "baseBranches": ["develop"]
+  "baseBranches": ["develop"],
+  "assignees": ["daniel"],
+  "reviewers": ["daniel"],
+  "packageRules": [
+    {
+      "description": "Frontend Angular dependencies",
+      "matchManagers": ["npm"],
+      "matchPaths": ["frontend/**"],
+      "groupName": "Frontend: Angular",
+      "matchPackagePatterns": ["^@angular"],
+      "labels": ["frontend", "dependencies"]
+    },
+    {
+      "description": "Go backend dependencies",
+      "matchManagers": ["gomod"],
+      "matchPaths": ["backend/**"],
+      "groupName": "Backend: Go modules",
+      "labels": ["backend", "dependencies"]
+    }
+  ]
 }
